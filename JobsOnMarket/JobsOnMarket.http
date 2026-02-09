@@ -1,6 +1,6 @@
 @JobsOnMarket_HostAddress = http://localhost:5142
 
-GET {{JobsOnMarket_HostAddress}}/weatherforecast/
+GET {{JobsOnMarket_HostAddress}}/Customer/
 Accept: application/json
 
 ###

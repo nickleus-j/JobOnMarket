@@ -7,7 +7,7 @@ namespace JobMarket.Data
     public interface IDataWorkUnit
     {
         void Dispose();
-        int CompleteAsync();
+        Task<int> CompleteAsync();
         IContractorRepository ContractorRepository { get; }
         ICustomerRepository CustomerRepository { get; }
     }
