@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="JobMarket.Data/JobMarket.Data.csproj" Id="400c5cc0-55f6-4498-8582-54090453118b" />
+  <Project Path="JobsOnMarket/JobsOnMarket.csproj" />
+</Solution>
