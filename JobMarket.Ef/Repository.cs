@@ -55,5 +55,9 @@ namespace JobMarket.Ef
         {
             return await Context.Set<TEntity>().SingleAsync(predicate);
         }
+        public TEntity Update(TEntity entity)
+        {
+            return Context.Update(entity).Entity;
+        }
     }
 }

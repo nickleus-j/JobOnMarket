@@ -8,5 +8,6 @@ namespace JobMarket.Data
     public interface IJobRepository : IRepository<Job>
     {
         Task AcceptJob(int jobId, int customerId);
+        Task RemoveJob(int jobId);
     }
 }

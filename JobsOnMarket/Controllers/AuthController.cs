@@ -1,4 +1,5 @@
 ﻿using JobsOnMarket.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,11 @@ namespace JobsOnMarket.Controllers
                     new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
+                var userRoles = await _userManager.GetRolesAsync(user);
+                foreach (var role in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, role));
+                }
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
                 var token = GetToken(authClaims);
@@ -44,6 +50,42 @@ namespace JobsOnMarket.Controllers
                 });
             }
             return Unauthorized();
+        }
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Get()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized(new { message = "User not found." });
+            var roles = await _userManager.GetRolesAsync(user);
+            return Ok(new { roles,user.UserName });
+        }
+        // POST: api/Auth/set
+        [HttpPost("set")]
+        [Authorize]
+        public async Task<IActionResult> SetRole([FromBody] string role)
+        {
+            // Validate role
+            var allowedRoles = new[] { "General", "Customer", "Contractor" };
+            if (!allowedRoles.Contains(role))
+                return BadRequest(new { message = "Invalid role. Allowed roles: General, Customer, Staff." });
+
+            // Get current user from JWT
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized(new { message = "User not found." });
+
+            // Remove existing roles
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+
+            // Add new role
+            var result = await _userManager.AddToRoleAsync(user, role);
+            if (!result.Succeeded)
+                return StatusCode(500, new { message = "Failed to set role.", errors = result.Errors });
+
+            return Ok(new { message = $"Role set to {role} for user {user.UserName}." });
         }
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {

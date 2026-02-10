@@ -14,20 +14,17 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
     .AddUserSecrets<Program>(optional: true) // enables dotnet user-secrets override
     .AddEnvironmentVariables(); // enables Docker/env var override
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-string defaultUserPassword = builder.Configuration["DefaultUserPassword"];
-if(string.IsNullOrEmpty(defaultUserPassword))
-{
-    throw new InvalidOperationException("Default user password not found in configuration.");
-}
+string defaultUserPassword = builder.Configuration["DefaultUserPassword"]?? throw new InvalidOperationException("Default user password not found in configuration.");
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
 builder.Services.AddTransient<IDataWorkUnit, EfWorkUnit>();
 builder.Services.AddDbContext<JobMarketContext>(options =>
     options.UseSqlServer(connectionString, b => b.MigrationsAssembly("JobsOnMarket")));
+
 //JWT
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<JobMarketContext>();
 builder.Services.AddAuthentication(options =>
 {
@@ -65,6 +62,7 @@ builder.Services.AddSwaggerGen(options =>
         [new OpenApiSecuritySchemeReference("bearer", document)] = []
     });
 });
+builder.Services.AddOpenApi();
 builder.Services.AddOpenApiDocument();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -83,6 +81,7 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred when hashing");
     }
 }
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

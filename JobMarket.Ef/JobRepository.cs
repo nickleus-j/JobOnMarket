@@ -24,6 +24,11 @@ namespace JobMarket.Ef
             job.AcceptedById = customerId;
             await marketContext.SaveChangesAsync();
         }
-
+        public async Task RemoveJob(int jobId)
+        {
+            var job = await SingleAsync(j => j.ID == jobId);
+            Remove(job);
+            await marketContext.SaveChangesAsync();
+        }
     }
 }
