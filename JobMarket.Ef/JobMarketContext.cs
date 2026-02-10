@@ -74,5 +74,17 @@ namespace JobMarket.Ef
                 modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string> { RoleId = roleIds.ElementAt(i), UserId = "8e445865-aaaa-4543-aaaa-9443d048cdb9".Replace("a",i.ToString()) });
             }
         }
+        public void HashUserPasswordsIfNeeded(string defaultPassword= "aPassword123!")
+        {
+            var hasher = new PasswordHasher<string>();
+            foreach (var user in Users)
+            {
+                if (string.IsNullOrEmpty(user.PasswordHash) || user.PasswordHash.Length<15)
+                {
+                    user.PasswordHash = hasher.HashPassword(user.UserName, defaultPassword);
+                }
+            }
+            SaveChanges();
+        }
     }
 }

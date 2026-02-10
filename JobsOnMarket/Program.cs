@@ -1,8 +1,12 @@
 using JobMarket.Data;
 using JobMarket.Ef;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -10,6 +14,11 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
     .AddUserSecrets<Program>(optional: true) // enables dotnet user-secrets override
     .AddEnvironmentVariables(); // enables Docker/env var override
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+string defaultUserPassword = builder.Configuration["DefaultUserPassword"];
+if(string.IsNullOrEmpty(defaultUserPassword))
+{
+    throw new InvalidOperationException("Default user password not found in configuration.");
+}
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -17,14 +26,63 @@ builder.Services.AddOpenApi();
 builder.Services.AddTransient<IDataWorkUnit, EfWorkUnit>();
 builder.Services.AddDbContext<JobMarketContext>(options =>
     options.UseSqlServer(connectionString, b => b.MigrationsAssembly("JobsOnMarket")));
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddOpenApiDocument();
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+//JWT
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<JobMarketContext>();
-var app = builder.Build();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(o =>
+{
+    o.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = builder.Configuration["Jwt:ValidIssuer"],
+        ValidAudience = builder.Configuration["Jwt:ValidAudience"],
+        IssuerSigningKey = new SymmetricSecurityKey
+        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"])),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true
+    };
+});
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+    });
+});
+builder.Services.AddOpenApiDocument();
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+
+var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        services.GetRequiredService<JobMarketContext>().HashUserPasswordsIfNeeded(defaultUserPassword);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred when hashing");
+    }
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -41,6 +99,7 @@ app.UseSwaggerUI(options =>
 });
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

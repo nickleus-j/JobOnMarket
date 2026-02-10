@@ -13,11 +13,14 @@ namespace JobMarket.Ef
 
         public ICustomerRepository CustomerRepository { get; private set; }
 
+        public IJobRepository JobRepository { get; private set; }
+
         public EfWorkUnit(JobMarketContext context)
         {
             _context = context;
             ContractorRepository = new ContractorRepository(_context);
             CustomerRepository = new CustomerRepository(_context);
+            JobRepository = new JobRepository(_context);
         }
         public async Task<int> CompleteAsync()
         {

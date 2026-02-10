@@ -12,7 +12,7 @@ namespace JobMarket.Ef
         public ContractorRepository(DbContext context) : base(context)
         {
         }
-        public JobMarketContext marketContext
+        private JobMarketContext marketContext
         {
             get { return Context as JobMarketContext; }
         }

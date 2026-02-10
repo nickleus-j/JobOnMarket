@@ -13,7 +13,7 @@ namespace JobMarket.Ef
         {
         }
 
-        public JobMarketContext marketContext
+        private JobMarketContext marketContext
         {
             get { return Context as JobMarketContext; }
         }

@@ -10,5 +10,6 @@ namespace JobMarket.Data
         Task<int> CompleteAsync();
         IContractorRepository ContractorRepository { get; }
         ICustomerRepository CustomerRepository { get; }
+        IJobRepository JobRepository { get; }
     }
 }
