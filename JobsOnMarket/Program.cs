@@ -15,7 +15,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
     .AddUserSecrets<Program>(optional: true) // enables dotnet user-secrets override
     .AddEnvironmentVariables(); // enables Docker/env var override
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-string defaultUserPassword = builder.Configuration["DefaultUserPassword"]?? throw new InvalidOperationException("Default user password not found in configuration.");
+string defaultUserPassword = builder.Configuration["DefaultUserPassword"] ?? throw new InvalidOperationException("Default user password not found in configuration.");
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -73,6 +73,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
+    var db = scope.ServiceProvider.GetRequiredService<JobMarketContext>();
+    db.Database.Migrate(); // Creates DB if missing, applies migrations, seeds data
+}
+using (var scope = app.Services.CreateScope())
+{
     var services = scope.ServiceProvider;
     try
     {
@@ -92,7 +97,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseSwagger(options =>
 {
-    
+
 });
 app.UseSwaggerUI(options =>
 {
