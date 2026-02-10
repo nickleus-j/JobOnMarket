@@ -13,7 +13,7 @@ namespace JobMarket.Data.Entity
         [Key]
         public int ID {  get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime DuetDate { get; set; }
+        public DateTime DueDate { get; set; }
         [DefaultValue(0.0)]
         [Range(0.00, 999999.99, ErrorMessage = "Budget must be between 0.00 and 999999.99")]
         public double Budget { get; set; }

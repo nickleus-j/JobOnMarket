@@ -9,7 +9,7 @@ namespace JobsOnMarket.Validator
             RuleFor(x => x.StartDate)
                 .Must(BeNowOrInTheFuture)
                 .WithMessage("The event start date must be now or in the future.");
-            RuleFor(x => x.DuetDate)
+            RuleFor(x => x.DueDate)
                 .Must(BeNowOrInTheFuture)
                 .WithMessage("The event due date must be now or in the future.");
             RuleFor(x => x.Description)
