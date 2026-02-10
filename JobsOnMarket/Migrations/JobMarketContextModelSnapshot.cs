@@ -135,7 +135,7 @@ namespace JobsOnMarket.Migrations
                     b.Property<int>("JobId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OfferedById")
+                    b.Property<int?>("OfferedByContractorId")
                         .HasColumnType("int");
 
                     b.Property<double>("Price")
@@ -145,7 +145,7 @@ namespace JobsOnMarket.Migrations
 
                     b.HasIndex("JobId");
 
-                    b.HasIndex("OfferedById");
+                    b.HasIndex("OfferedByContractorId");
 
                     b.ToTable("JobOffer");
                 });
@@ -438,11 +438,11 @@ namespace JobsOnMarket.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JobMarket.Data.Entity.Customer", "OfferedBy")
+                    b.HasOne("JobMarket.Data.Entity.Contractor", "OfferedByContractor")
                         .WithMany()
-                        .HasForeignKey("OfferedById");
+                        .HasForeignKey("OfferedByContractorId");
 
-                    b.Navigation("OfferedBy");
+                    b.Navigation("OfferedByContractor");
 
                     b.Navigation("OfferedJob");
                 });

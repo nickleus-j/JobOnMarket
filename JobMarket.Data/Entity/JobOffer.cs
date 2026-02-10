@@ -17,8 +17,8 @@ namespace JobMarket.Data.Entity
         public int JobId { get; set; }
         [ForeignKey("JobId")]
         public Job? OfferedJob { get; set; }
-        public Nullable<int> OfferedById { get; set; }
-        [ForeignKey("OfferedById")]
-        public Customer? OfferedBy { get; set; }
+        public Nullable<int> OfferedByContractorId { get; set; }
+        [ForeignKey("OfferedByContractorId")]
+        public Contractor? OfferedByContractor { get; set; }
     }
 }

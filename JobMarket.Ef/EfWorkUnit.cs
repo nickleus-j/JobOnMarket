@@ -14,6 +14,7 @@ namespace JobMarket.Ef
         public ICustomerRepository CustomerRepository { get; private set; }
 
         public IJobRepository JobRepository { get; private set; }
+        public IJobOfferRepository JobOfferRepository { get; private set; }
 
         public EfWorkUnit(JobMarketContext context)
         {
@@ -21,6 +22,7 @@ namespace JobMarket.Ef
             ContractorRepository = new ContractorRepository(_context);
             CustomerRepository = new CustomerRepository(_context);
             JobRepository = new JobRepository(_context);
+            JobOfferRepository=new JobOfferRepository(_context);
         }
         public async Task<int> CompleteAsync()
         {

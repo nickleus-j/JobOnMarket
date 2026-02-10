@@ -41,7 +41,7 @@ namespace JobMarket.Ef.Tests
         public async Task SearchContractor_WithNameSubstring_IsCaseInsensitiveAndPartialMatch()
         {
             DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
-                .UseInMemoryDatabase(databaseName: "jobMark").Options;
+                .UseInMemoryDatabase(databaseName: "jobMarkWithMatch").Options;
 
             using (var context = new JobMarketContext(dbContextOptions))
             {
@@ -69,7 +69,7 @@ namespace JobMarket.Ef.Tests
         public async Task SearchContractor_NoMatches_ReturnsEmptyList()
         {
             DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
-                .UseInMemoryDatabase(databaseName: "jobMark").Options;
+                .UseInMemoryDatabase(databaseName: "jobMarkSearch").Options;
 
             using (var context = new JobMarketContext(dbContextOptions))
             {

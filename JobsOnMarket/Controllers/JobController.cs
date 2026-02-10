@@ -32,6 +32,10 @@ namespace JobsOnMarket.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] Job entity)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Returns 400 Bad Request with error details
+            }
             await UnitOfWork.JobRepository.AddAsync(entity);
             await UnitOfWork.CompleteAsync();
             return Ok(entity);
@@ -40,6 +44,10 @@ namespace JobsOnMarket.Controllers
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] Job entity)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Returns 400 Bad Request with error details
+            }
             try
             {
                 UnitOfWork.JobRepository.Update(entity);

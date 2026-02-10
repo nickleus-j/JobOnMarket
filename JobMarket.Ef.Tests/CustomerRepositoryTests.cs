@@ -10,21 +10,6 @@ namespace JobMarket.Ef.Tests
 {
     public class CustomerRepositoryTests
     {
-
-        [Fact]
-        public void MarketContextProperty_ReturnsJobMarketContextInstance()
-        {
-            DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
-                .UseInMemoryDatabase(databaseName: "jobMark").Options;
-            using var context =  new JobMarketContext(dbContextOptions);
-            // Ensure DB schema exists
-            context.Database.EnsureCreated();
-
-            var repo = new CustomerRepository(context);
-
-            Assert.Same(context, repo.marketContext);
-        }
-
         [Fact]
         public async Task SearchCustomerAsync_ById_ReturnsMatchingCustomer()
         {

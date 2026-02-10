@@ -208,6 +208,32 @@ namespace JobsOnMarket.Migrations
                         principalColumn: "ID");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "JobOffer",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    JobId = table.Column<int>(type: "int", nullable: false),
+                    OfferedByContractorId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobOffer", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_JobOffer_Contractor_OfferedByContractorId",
+                        column: x => x.OfferedByContractorId,
+                        principalTable: "Contractor",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_JobOffer_Job_JobId",
+                        column: x => x.JobId,
+                        principalTable: "Job",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
@@ -297,6 +323,16 @@ namespace JobsOnMarket.Migrations
                 name: "IX_Job_AcceptedById",
                 table: "Job",
                 column: "AcceptedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobOffer_JobId",
+                table: "JobOffer",
+                column: "JobId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobOffer_OfferedByContractorId",
+                table: "JobOffer",
+                column: "OfferedByContractorId");
         }
 
         /// <inheritdoc />
@@ -318,16 +354,19 @@ namespace JobsOnMarket.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Contractor");
-
-            migrationBuilder.DropTable(
-                name: "Job");
+                name: "JobOffer");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Contractor");
+
+            migrationBuilder.DropTable(
+                name: "Job");
 
             migrationBuilder.DropTable(
                 name: "Customer");

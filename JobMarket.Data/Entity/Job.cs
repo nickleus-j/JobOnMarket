@@ -15,6 +15,7 @@ namespace JobMarket.Data.Entity
         public DateTime StartDate { get; set; }
         public DateTime DuetDate { get; set; }
         [DefaultValue(0.0)]
+        [Range(0.00, 999999.99, ErrorMessage = "Price must be between 0.00 and 999999.99")]
         public double Budget { get; set; }
         [Column(TypeName = "text")]
         public string? Description { get; set; }
