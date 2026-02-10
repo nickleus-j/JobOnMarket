@@ -4,6 +4,7 @@ using JobMarket.Ef;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobsOnMarket.Migrations
 {
     [DbContext(typeof(JobMarketContext))]
-    partial class JobMarketContextModelSnapshot : ModelSnapshot
+    [Migration("20260210091623_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,27 +125,6 @@ namespace JobsOnMarket.Migrations
                     b.HasIndex("AcceptedById");
 
                     b.ToTable("Job");
-                });
-
-            modelBuilder.Entity("JobMarket.Data.Entity.JobOffer", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<int>("JobId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("JobId");
-
-                    b.ToTable("JobOffer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -423,17 +405,6 @@ namespace JobsOnMarket.Migrations
                         .HasForeignKey("AcceptedById");
 
                     b.Navigation("AcceptedBy");
-                });
-
-            modelBuilder.Entity("JobMarket.Data.Entity.JobOffer", b =>
-                {
-                    b.HasOne("JobMarket.Data.Entity.Job", "OfferedJob")
-                        .WithMany()
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OfferedJob");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

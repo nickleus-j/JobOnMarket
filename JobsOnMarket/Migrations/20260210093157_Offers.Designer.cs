@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobsOnMarket.Migrations
 {
     [DbContext(typeof(JobMarketContext))]
-    [Migration("20260209211205_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260210093157_Offers")]
+    partial class Offers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -127,6 +127,27 @@ namespace JobsOnMarket.Migrations
                     b.ToTable("Job");
                 });
 
+            modelBuilder.Entity("JobMarket.Data.Entity.JobOffer", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("JobId");
+
+                    b.ToTable("JobOffer");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -152,6 +173,29 @@ namespace JobsOnMarket.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "00445865-0000-0000-0000-9443d048cdb9",
+                            ConcurrencyStamp = "00445865-0000-0000-0000-9443d048cd00",
+                            Name = "General",
+                            NormalizedName = "General"
+                        },
+                        new
+                        {
+                            Id = "8e445865-0000-0000-0000-9443d048cdb9",
+                            ConcurrencyStamp = "8e445865-0000-0000-0000-9443d048cdb9",
+                            Name = "Customer",
+                            NormalizedName = "Customer"
+                        },
+                        new
+                        {
+                            Id = "8e445865-aaaa-aaaa-aaaa-9443d048cdb9",
+                            ConcurrencyStamp = "8e445865-aaaa-aaaa-aaaa-9443d048cdb9",
+                            Name = "Contractor",
+                            NormalizedName = "Contractor"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -242,6 +286,40 @@ namespace JobsOnMarket.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "8e445865-0000-4543-0000-9443d048cdb9",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "8e445865-0000-aaaa-0000-9443d048cd00",
+                            Email = "customer@customer.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "CUSTOMER@CUSTOMER.COM",
+                            NormalizedUserName = "CUSTOMER@CUSTOMER.COM",
+                            PasswordHash = "aPassword123!",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "8e445865-0000-aaaa-0000-9443d048cdb9",
+                            TwoFactorEnabled = false,
+                            UserName = "customer@customer.com"
+                        },
+                        new
+                        {
+                            Id = "8e445865-1111-4543-1111-9443d048cdb9",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "8e445865-1111-aaaa-1111-9443d048cd00",
+                            Email = "Contractor@Contractor.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "CONTRACTOR@CONTRACTOR.COM",
+                            NormalizedUserName = "CONTRACTOR@CONTRACTOR.COM",
+                            PasswordHash = "bPassword123!",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "8e445865-1111-aaaa-1111-9443d048cdb9",
+                            TwoFactorEnabled = false,
+                            UserName = "Contractor@Contractor.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -306,6 +384,18 @@ namespace JobsOnMarket.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "8e445865-0000-4543-0000-9443d048cdb9",
+                            RoleId = "8e445865-0000-0000-0000-9443d048cdb9"
+                        },
+                        new
+                        {
+                            UserId = "8e445865-1111-4543-1111-9443d048cdb9",
+                            RoleId = "8e445865-aaaa-aaaa-aaaa-9443d048cdb9"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -336,6 +426,17 @@ namespace JobsOnMarket.Migrations
                         .HasForeignKey("AcceptedById");
 
                     b.Navigation("AcceptedBy");
+                });
+
+            modelBuilder.Entity("JobMarket.Data.Entity.JobOffer", b =>
+                {
+                    b.HasOne("JobMarket.Data.Entity.Job", "OfferedJob")
+                        .WithMany()
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OfferedJob");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

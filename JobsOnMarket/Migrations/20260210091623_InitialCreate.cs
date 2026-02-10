@@ -209,6 +209,25 @@ namespace JobsOnMarket.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "00445865-0000-0000-0000-9443d048cdb9", "00445865-0000-0000-0000-9443d048cd00", "General", "General" },
+                    { "8e445865-0000-0000-0000-9443d048cdb9", "8e445865-0000-0000-0000-9443d048cdb9", "Customer", "Customer" },
+                    { "8e445865-aaaa-aaaa-aaaa-9443d048cdb9", "8e445865-aaaa-aaaa-aaaa-9443d048cdb9", "Contractor", "Contractor" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "8e445865-0000-4543-0000-9443d048cdb9", 0, "8e445865-0000-aaaa-0000-9443d048cd00", "customer@customer.com", false, false, null, "CUSTOMER@CUSTOMER.COM", "CUSTOMER@CUSTOMER.COM", "aPassword123!", null, false, "8e445865-0000-aaaa-0000-9443d048cdb9", false, "customer@customer.com" },
+                    { "8e445865-1111-4543-1111-9443d048cdb9", 0, "8e445865-1111-aaaa-1111-9443d048cd00", "Contractor@Contractor.com", false, false, null, "CONTRACTOR@CONTRACTOR.COM", "CONTRACTOR@CONTRACTOR.COM", "bPassword123!", null, false, "8e445865-1111-aaaa-1111-9443d048cdb9", false, "Contractor@Contractor.com" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Contractor",
                 columns: new[] { "ID", "Name", "Rating" },
                 values: new object[,]
@@ -224,6 +243,15 @@ namespace JobsOnMarket.Migrations
                 {
                     { 1, "John", "Doe" },
                     { 2, "Jane", "Dow" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[,]
+                {
+                    { "8e445865-0000-0000-0000-9443d048cdb9", "8e445865-0000-4543-0000-9443d048cdb9" },
+                    { "8e445865-aaaa-aaaa-aaaa-9443d048cdb9", "8e445865-1111-4543-1111-9443d048cdb9" }
                 });
 
             migrationBuilder.CreateIndex(
