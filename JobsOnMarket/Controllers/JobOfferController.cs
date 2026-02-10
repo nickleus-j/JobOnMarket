@@ -2,7 +2,9 @@
 using JobMarket.Data.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobsOnMarket.Controllers
 {
@@ -29,8 +31,16 @@ namespace JobsOnMarket.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] JobOffer entity)
         {
-            await UnitOfWork.JobOfferRepository.AddAsync(entity);
-            await UnitOfWork.CompleteAsync();
+            try
+            {
+                await UnitOfWork.JobOfferRepository.AddAsync(entity);
+                await UnitOfWork.CompleteAsync();
+            }
+            catch (DbUpdateException dbe)
+            {
+                return BadRequest(dbe.Message);
+            }
+
             return Ok(entity);
         }
         [Authorize(Roles = "Contractor")]
@@ -40,14 +50,28 @@ namespace JobsOnMarket.Controllers
             try
             {
                 UnitOfWork.JobOfferRepository.Update(entity);
+                await UnitOfWork.CompleteAsync();
             }
-            catch (InvalidOperationException ibe)
+            catch (DbUpdateException dbe)
             {
-                return BadRequest(ibe.Message);
+                return BadRequest(dbe.Message);
             }
 
-            await UnitOfWork.CompleteAsync();
             return Ok(entity);
+        }
+        [Authorize(Roles = "Customer")]
+        [HttpPut("AcceptJobOffer/{offerId}/{customerId}")]
+        public async Task<ActionResult> AcceptJobOffer(int offerId, int customerId)
+        {
+            try
+            {
+                int jobId=await UnitOfWork.JobOfferRepository.AcceptJobOffer(offerId, customerId);
+                return Ok(await UnitOfWork.JobRepository.SingleAsync(j => j.ID == jobId));
+            }
+            catch (DbUpdateException dbe)
+            {
+                return BadRequest(dbe.Message);
+            }
         }
         [Authorize]
         [HttpDelete()]
@@ -58,9 +82,9 @@ namespace JobsOnMarket.Controllers
                 UnitOfWork.JobOfferRepository.Remove(entity);
                 await UnitOfWork.CompleteAsync();
             }
-            catch (InvalidOperationException ibe)
+            catch (DbUpdateException dbe)
             {
-                return BadRequest(ibe.Message);
+                return BadRequest(dbe.Message);
             }
             return Ok();
         }

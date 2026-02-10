@@ -1,4 +1,6 @@
-﻿using JobMarket.Data;
+﻿using Azure.Core;
+using FluentValidation;
+using JobMarket.Data;
 using JobMarket.Data.Entity;
 using JobMarket.Ef;
 using Microsoft.AspNetCore.Authorization;
@@ -13,9 +15,11 @@ namespace JobsOnMarket.Controllers
     public class JobController : ControllerBase
     {
         private IDataWorkUnit UnitOfWork;
-        public JobController(IDataWorkUnit unitOfWork)
+        private  IValidator<Job> _validator;
+        public JobController(IDataWorkUnit unitOfWork, IValidator<Job> validator)
         {
             this.UnitOfWork = unitOfWork;
+            this._validator = validator;
         }
         [HttpGet]
         public async Task<ActionResult> Get()
@@ -36,8 +40,22 @@ namespace JobsOnMarket.Controllers
             {
                 return BadRequest(ModelState); // Returns 400 Bad Request with error details
             }
-            await UnitOfWork.JobRepository.AddAsync(entity);
-            await UnitOfWork.CompleteAsync();
+            var validationResult = await _validator.ValidateAsync(entity);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.ToDictionary());
+            }
+            try
+            {
+                await UnitOfWork.JobRepository.AddAsync(entity);
+                await UnitOfWork.CompleteAsync();
+            }
+            catch (DbUpdateException dbe)
+            {
+                return BadRequest(dbe.Message);
+            }
+
             return Ok(entity);
         }
         [Authorize(Roles = "Customer")]
@@ -48,16 +66,21 @@ namespace JobsOnMarket.Controllers
             {
                 return BadRequest(ModelState); // Returns 400 Bad Request with error details
             }
+            var validationResult = await _validator.ValidateAsync(entity);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.ToDictionary());
+            }
             try
             {
                 UnitOfWork.JobRepository.Update(entity);
+                await UnitOfWork.CompleteAsync();
             }
-            catch (InvalidOperationException ibe)
+            catch (DbUpdateException dbe)
             {
-                return BadRequest( ibe.Message);
+                return BadRequest(dbe.Message);
             }
-
-            await UnitOfWork.CompleteAsync();
             return Ok(entity);
         }
         [Authorize]
@@ -68,9 +91,9 @@ namespace JobsOnMarket.Controllers
             {
                 await UnitOfWork.JobRepository.RemoveJob(id);
             }
-            catch (InvalidOperationException ibe)
+            catch (DbUpdateException dbe)
             {
-                return BadRequest(ibe.Message);
+                return BadRequest(dbe.Message);
             }
             return Ok();
         }

@@ -8,5 +8,6 @@ namespace JobMarket.Data
     public interface IJobOfferRepository : IRepository<JobOffer>
     {
         Task<IEnumerable<JobOffer>> OffersForJobsNotAcceptedYetAsync();
+        Task<int> AcceptJobOffer(int offerId, int customerId);
     }
 }

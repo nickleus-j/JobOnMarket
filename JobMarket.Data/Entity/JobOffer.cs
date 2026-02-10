@@ -13,6 +13,7 @@ namespace JobMarket.Data.Entity
         [Key]
         public int ID { get; set; }
         [DefaultValue(1.0)]
+        [Range(0.00, 999999.99, ErrorMessage = "Price must be between 0.00 and 999999.99")]
         public double Price { get; set; }
         public int JobId { get; set; }
         [ForeignKey("JobId")]

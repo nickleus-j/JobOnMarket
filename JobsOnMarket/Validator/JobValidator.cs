@@ -9,11 +9,21 @@ namespace JobsOnMarket.Validator
             RuleFor(x => x.StartDate)
                 .Must(BeNowOrInTheFuture)
                 .WithMessage("The event start date must be now or in the future.");
+            RuleFor(x => x.DuetDate)
+                .Must(BeNowOrInTheFuture)
+                .WithMessage("The event due date must be now or in the future.");
+            RuleFor(x => x.Description)
+                .Must(TextHasContent)
+                .WithMessage("Text must have Content");
         }
 
         private bool BeNowOrInTheFuture(DateTime date)
         {
             return date >= DateTime.Now;
+        }
+        private bool TextHasContent(string? text)
+        {
+            return !String.IsNullOrWhiteSpace(text);
         }
     }
 }
