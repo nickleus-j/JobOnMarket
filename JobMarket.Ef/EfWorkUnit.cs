@@ -15,6 +15,8 @@ namespace JobMarket.Ef
 
         public IJobRepository JobRepository { get; private set; }
         public IJobOfferRepository JobOfferRepository { get; private set; }
+        public ICustomerUserRepository CustomerUserRepository { get; private set; }
+        public IContractorUserRepository ContractorUserRepository { get; private set; }
 
         public EfWorkUnit(JobMarketContext context)
         {

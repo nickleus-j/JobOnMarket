@@ -38,18 +38,18 @@ namespace JobMarket.Ef
 
             
             string[] roleNames = { "Customer", "Contractor" };
-            string[] emails = { "customer@customer.com", "Contractor@Contractor.com" };
+            string[] emails = { "customer@customer.com", "Contractor@Contractor.com", "acustomer@customer.com", "acontractor@Contractor.com" };
             string[] roleIds = { "8e445865-0000-0000-0000-9443d048cdb9", "8e445865-aaaa-aaaa-aaaa-9443d048cdb9" };
-
+            string[] userIds = { "8e445800-0000-4543-0000-9443d048cdb9", "8e445800-1111-4543-1111-9443d048cdb9","8e445801-0000-4543-0000-9443d048cdb9", "8e445801-1111-4543-1111-9443d048cdb9" };
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Id = "00445865-0000-0000-0000-9443d048cdb9", Name = "General", NormalizedName = "General", ConcurrencyStamp = "00445865-0000-0000-0000-9443d048cd00" });
-            for (int i = 0; i < emails.Length; i++)
+            for (int i = 0; i < 2; i++)
             {
                 modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Id = roleIds[i], Name = roleNames[i], NormalizedName = roleNames[i],ConcurrencyStamp= roleIds[i] });
             }
             var hasher = new PasswordHasher<string>(); 
             modelBuilder.Entity<IdentityUser>().HasData(new IdentityUser
             {
-                Id = "8e445865-0000-4543-0000-9443d048cdb9", // Static GUID
+                Id = userIds[0], // Static GUID
                 UserName = emails[0],
                 NormalizedUserName = emails[0].ToUpper(),
                 Email = emails[0],
@@ -60,7 +60,7 @@ namespace JobMarket.Ef
             });
             modelBuilder.Entity<IdentityUser>().HasData(new IdentityUser
             {
-                Id = "8e445865-1111-4543-1111-9443d048cdb9", // Static GUID
+                Id = userIds[1], // Static GUID
                 UserName = emails[1],
                 NormalizedUserName = emails[1].ToUpper(),
                 Email = emails[1],
@@ -69,10 +69,36 @@ namespace JobMarket.Ef
                 SecurityStamp = "8e445865-1111-aaaa-1111-9443d048cdb9",
                 ConcurrencyStamp = "8e445865-1111-aaaa-1111-9443d048cd00"
             });
-            for(int i = 0; i < roleIds.Length; i++)
+            modelBuilder.Entity<IdentityUser>().HasData(new IdentityUser
+            {
+                Id = userIds[2], // Static GUID
+                UserName = emails[2],
+                NormalizedUserName = emails[2].ToUpper(),
+                Email = emails[2],
+                NormalizedEmail = emails[2].ToUpper(),
+                PasswordHash = "aPassword123!",
+                SecurityStamp = "8e445865-0000-aaaa-0000-9443d048cdaa",
+                ConcurrencyStamp = "8e445865-0000-aaaa-0000-9443d048cdaa"
+            });
+            modelBuilder.Entity<IdentityUser>().HasData(new IdentityUser
+            {
+                Id = userIds[3], // Static GUID
+                UserName = emails[3],
+                NormalizedUserName = emails[3].ToUpper(),
+                Email = emails[3],
+                NormalizedEmail = emails[3].ToUpper(),
+                PasswordHash = "bPassword123!",
+                SecurityStamp = "8e445865-1111-aaaa-1111-9443d048cd11",
+                ConcurrencyStamp = "8e445865-1111-aaaa-1111-9443d048cd11"
+            });
+            for (int i = 0; i < roleIds.Length; i++)
             {
                 modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string> { RoleId = roleIds.ElementAt(i), UserId = "8e445865-aaaa-4543-aaaa-9443d048cdb9".Replace("a",i.ToString()) });
             }
+            modelBuilder.Entity<CustomerUser>().HasData(new CustomerUser { ID = 1, UserId = userIds[0], CustomerId = 1 },
+                new CustomerUser { ID = 2, UserId = userIds[1], CustomerId = 2 });
+            modelBuilder.Entity<ContractorUser>().HasData(new ContractorUser { ID = 1, UserId = userIds[2], ContractorId = 1 }
+                , new ContractorUser { ID=2,UserId = userIds[3], ContractorId = 2});
         }
         public void HashUserPasswordsIfNeeded(string defaultPassword= "aPassword123!")
         {

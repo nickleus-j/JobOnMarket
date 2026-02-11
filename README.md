@@ -2,9 +2,9 @@
 ##  About
 This is a practice app that serves as marketplace for outsourcing jobs to contractors.
 The information can be accessed and modifed with the API that is connected to a SQL server.
-The database is MS-SQL.
+The database is MS-SQL. This has been tested on a Windows machine.
 
-## Requirement to Run
+## Requirement to Run installation script
 - Windows
 - Docker
 - Powershell
@@ -38,3 +38,9 @@ Examples of valid passwords:
 ## Other notes
 This can also be run via Visual Studio but needs Configuration of Values. Encouraged to use manage usersecrets of the JobsOnMarket project.
 Connection string will require a working sql server instace with the right credentials.
+
+## For non Windows Machines
+- Download source file
+- connect to a sql server remotely or via containers
+- place configuration values for connection string and default password for seeded users.
+- Run JobsOnMarket api via dotnet or Visual Studio code
