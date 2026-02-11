@@ -39,6 +39,8 @@ Examples of valid passwords:
 This can also be run via Visual Studio but needs Configuration of Values. Encouraged to use manage usersecrets of the JobsOnMarket project.
 Connection string will require a working sql server instace with the right credentials.
 
+Running Please make sure that ports 1433,5142,7180 are free to be used. The setup requires those ports.
+
 ## For non Windows Machines
 - Download source file
 - connect to a sql server remotely or via containers

@@ -8,6 +8,7 @@ namespace JobMarket.Data
     public interface IRepository<TEntity> where TEntity : class
     {
         Task<TEntity> GetAsync(int id);
+        Task<IEnumerable<TEntity>> GetFromPageAsync(int page, int pageSize,string orderByColumn,string sortOrder = "asc");
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<IList<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
 

@@ -18,9 +18,15 @@ namespace JobsOnMarket.Controllers
             this.UnitOfWork = unitOfWork;
         }
         [HttpGet]
-        public async Task<ActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            return Ok(await UnitOfWork.JobOfferRepository.GetAllAsync());
+            if (page < 1 || pageSize < 1)
+            {
+                return BadRequest("Page and pageSize must be greater than 0.");
+            }
+
+            var offers = await UnitOfWork.JobOfferRepository.GetFromPageAsync(page, pageSize, "ID");
+            return Ok(offers);
         }
         [HttpGet("Available")]
         public async Task<ActionResult> GetAvailable()

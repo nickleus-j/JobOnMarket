@@ -22,9 +22,15 @@ namespace JobsOnMarket.Controllers
             this._validator = validator;
         }
         [HttpGet]
-        public async Task<ActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            return Ok(await UnitOfWork.JobRepository.GetAllAsync());
+            if (page < 1 || pageSize < 1)
+            {
+                return BadRequest("Page and pageSize must be greater than 0.");
+            }
+
+            var jobs = await UnitOfWork.JobRepository.GetFromPageAsync(page, pageSize, "ID");
+            return Ok(jobs);
         }
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(int id)

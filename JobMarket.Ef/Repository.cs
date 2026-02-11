@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
+using System.Linq.Dynamic.Core;
 
 namespace JobMarket.Ef
 {
@@ -39,6 +40,29 @@ namespace JobMarket.Ef
         public async Task<TEntity> GetAsync(int id)
         {
             return await Context.Set<TEntity>().FindAsync(id);
+        }
+
+        public async Task<IEnumerable<TEntity>> GetFromPageAsync(int page, int pageSize, string orderByColumn, string sortOrder = "asc")
+        {
+            // Simple validation
+            if (page < 1) page = 1;
+            if (pageSize < 1) pageSize = 10; // Default size
+
+            var totalCount = await Context.Set<TEntity>().CountAsync();
+            IQueryable<TEntity> source;
+            if (!string.IsNullOrEmpty(orderByColumn))
+            {
+                var orderString = $"{orderByColumn} {sortOrder}";
+                source = Context.Set<TEntity>().OrderBy<TEntity>(orderString);
+            }
+            else
+            {
+                // Fallback to a default order if none is specified, EF requires an OrderBy
+                // Here is a default property, e.g., "Id"
+                source = Context.Set<TEntity>().OrderBy("Id asc");
+            }
+
+            return await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         }
 
         public void Remove(TEntity entity)
