@@ -14,7 +14,3 @@ SA_PASSWORD=$plainPassword
 
 # Build and start containers
 docker-compose up -d --build
-
-
-# Apply EF Core migrations (which also seed data)
-#docker exec jobsonmarket dotnet ef database update --project JobsOnMarket.csproj

@@ -28,21 +28,30 @@ The SA account follows a strong password policy. Otherwise, the setup will fail
   * Base 10 digits (0 through 9)
   * Nonalphanumeric characters (symbols such as !, $, #, %, @, ^, &, *, (, ), etc.). 
 
-Examples of valid passwords:
+### Examples of valid passwords:
 
 - P@ssw0rd123
  -  Abcd!efgh
 -  MyStr0ngP@ssw0rd
 -   S0und$ecure
 
+## Setup For non Windows Machines
+- Download source file
+- connect to a sql server remotely or via containers
+- place configuration values for connection string and default password for seeded users.
+- Run JobsOnMarket api via dotnet or Visual Studio code
+
+## Notes for Running the enpoints on Swagger
+- Need to Authenticte to Authorize.
+- Feel free to authenticate as a Customer or contractor.
+- Different endpoints will available depending on Endpoints.
+- Use the default password for all IdentityUsers stated in the .docker compose file.
+- The default password can be set in user secrets of  the API project and applied upon reseed.
+- Reseed can be done by deleting the database & rerun the API project.
+
+
 ## Other notes
 This can also be run via Visual Studio but needs Configuration of Values. Encouraged to use manage usersecrets of the JobsOnMarket project.
 Connection string will require a working sql server instace with the right credentials.
 
 Running Please make sure that ports 1433,5142,7180 are free to be used. The setup requires those ports.
-
-## For non Windows Machines
-- Download source file
-- connect to a sql server remotely or via containers
-- place configuration values for connection string and default password for seeded users.
-- Run JobsOnMarket api via dotnet or Visual Studio code
