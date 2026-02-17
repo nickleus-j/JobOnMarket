@@ -2,5 +2,6 @@
   <Project Path="JobMarket.Data/JobMarket.Data.csproj" Id="400c5cc0-55f6-4498-8582-54090453118b" />
   <Project Path="JobMarket.Ef.Tests/JobMarket.Ef.Tests.csproj" Id="5970b2f6-9199-4fc4-89da-61564351f676" />
   <Project Path="JobMarket.Ef/JobMarket.Ef.csproj" Id="e3178499-498e-434a-9b88-1ed3a76a14be" />
+  <Project Path="JobsOnMarket.Test/JobsOnMarket.Tests.csproj" Id="6782cef5-d3d6-4ac9-8228-c36f1810d0f1" />
   <Project Path="JobsOnMarket/JobsOnMarket.csproj" />
 </Solution>
