@@ -38,7 +38,7 @@ namespace JobMarket.Ef
 
             
             string[] roleNames = { "Customer", "Contractor" };
-            string[] emails = { "customer@customer.com", "Contractor@Contractor.com", "acustomer@customer.com", "acontractor@Contractor.com" };
+            string[] emails = { "customer@customer.com", "Contractor@contractor.com", "acustomer@customer.com", "acontractor@contractor.com" };
             string[] roleIds = { "8e445865-0000-0000-0000-9443d048cdb9", "8e445865-aaaa-aaaa-aaaa-9443d048cdb9" };
             string[] userIds = { "8e445800-0000-4543-0000-9443d048cdb9", "8e445800-1111-4543-1111-9443d048cdb9","8e445801-0000-4543-0000-9443d048cdb9", "8e445801-1111-4543-1111-9443d048cdb9" };
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Id = "00445865-0000-0000-0000-9443d048cdb9", Name = "General", NormalizedName = "General", ConcurrencyStamp = "00445865-0000-0000-0000-9443d048cd00" });
@@ -93,7 +93,7 @@ namespace JobMarket.Ef
             });
             for (int i = 0; i < roleIds.Length; i++)
             {
-                modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string> { RoleId = roleIds.ElementAt(i), UserId = "8e445865-aaaa-4543-aaaa-9443d048cdb9".Replace("a",i.ToString()) });
+                modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string> { RoleId = roleIds.ElementAt(i), UserId = "8e445800-aaaa-4543-aaaa-9443d048cdb9".Replace("a",i.ToString()) });
             }
             modelBuilder.Entity<CustomerUser>().HasData(new CustomerUser { ID = 1, UserId = userIds[0], CustomerId = 1 },
                 new CustomerUser { ID = 2, UserId = userIds[1], CustomerId = 2 });
