@@ -8,8 +8,8 @@ namespace JobsOnMarket.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private IDataWorkUnit UnitOfWork;
-        public CustomerController(IDataWorkUnit unitOfWork)
+        private IDataUnitOfWork UnitOfWork;
+        public CustomerController(IDataUnitOfWork unitOfWork)
         {
             this.UnitOfWork = unitOfWork;
         }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace JobMarket.Data
 {
-    public interface IDataWorkUnit
+    public interface IDataUnitOfWork
     {
         void Dispose();
         Task<int> CompleteAsync();

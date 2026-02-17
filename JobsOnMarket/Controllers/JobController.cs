@@ -14,9 +14,9 @@ namespace JobsOnMarket.Controllers
     [ApiController]
     public class JobController : ControllerBase
     {
-        private IDataWorkUnit UnitOfWork;
+        private IDataUnitOfWork UnitOfWork;
         private  IValidator<Job> _validator;
-        public JobController(IDataWorkUnit unitOfWork, IValidator<Job> validator)
+        public JobController(IDataUnitOfWork unitOfWork, IValidator<Job> validator)
         {
             this.UnitOfWork = unitOfWork;
             this._validator = validator;

@@ -18,7 +18,7 @@ string defaultUserPassword = builder.Configuration["DefaultUserPassword"] ?? thr
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddTransient<IDataWorkUnit, EfWorkUnit>();
+builder.Services.AddTransient<IDataUnitOfWork, EfUnitOfWork>();
 builder.Services.AddDbContext<JobMarketContext>(options =>
     options.UseSqlServer(connectionString, b => b.MigrationsAssembly("JobsOnMarket")));
 

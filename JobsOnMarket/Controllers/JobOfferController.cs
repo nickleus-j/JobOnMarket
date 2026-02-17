@@ -12,8 +12,8 @@ namespace JobsOnMarket.Controllers
     [ApiController]
     public class JobOfferController : ControllerBase
     {
-        private IDataWorkUnit UnitOfWork;
-        public JobOfferController(IDataWorkUnit unitOfWork)
+        private IDataUnitOfWork UnitOfWork;
+        public JobOfferController(IDataUnitOfWork unitOfWork)
         {
             this.UnitOfWork = unitOfWork;
         }

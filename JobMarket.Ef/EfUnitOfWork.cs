@@ -6,7 +6,7 @@ using System.Text;
 
 namespace JobMarket.Ef
 {
-    public class EfWorkUnit : IDataWorkUnit
+    public class EfUnitOfWork : IDataUnitOfWork
     {
         private readonly JobMarketContext _context;
         public IContractorRepository ContractorRepository { get; private set; }
@@ -18,13 +18,15 @@ namespace JobMarket.Ef
         public ICustomerUserRepository CustomerUserRepository { get; private set; }
         public IContractorUserRepository ContractorUserRepository { get; private set; }
 
-        public EfWorkUnit(JobMarketContext context)
+        public EfUnitOfWork(JobMarketContext context)
         {
             _context = context;
             ContractorRepository = new ContractorRepository(_context);
             CustomerRepository = new CustomerRepository(_context);
             JobRepository = new JobRepository(_context);
             JobOfferRepository=new JobOfferRepository(_context);
+            CustomerUserRepository = new CustomerUserRepository(_context);
+            ContractorUserRepository = new ContractorUserRepository(_context);
         }
         public async Task<int> CompleteAsync()
         {

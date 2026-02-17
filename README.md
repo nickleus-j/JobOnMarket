@@ -49,6 +49,12 @@ The SA account follows a strong password policy. Otherwise, the setup will fail
 - The default password can be set in user secrets of  the API project and applied upon reseed.
 - Reseed can be done by deleting the database & rerun the API project.
 
+# Authorize in Swagger
+- try enpoint /api/Auth/login
+- Enter a username from the [AspNetUsers] table but also find the associated role (Customer or Contractor)
+- Enter the default password from the dockercompose file or the user secrets.
+- Copy the JWT token and paste it to the textbox that appears after clicking the authorize button on swagger.
+- Logout by clicking authorize button again.
 
 ## Other notes
 This can also be run via Visual Studio but needs Configuration of Values. Encouraged to use manage usersecrets of the JobsOnMarket project.
