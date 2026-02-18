@@ -29,5 +29,10 @@ namespace JobMarket.Ef
             string loweredTerm = $"%{searchTerm.ToLower()}%";
             return await FindAsync(c => !String.IsNullOrEmpty(c.LastName) && EF.Functions.Like(c.LastName.ToLower(), loweredTerm));
         }
+        public async Task<IList<Customer>> SearchCustomerAsync(string searchTerm,int page,int pageSize=10)
+        {
+            string loweredTerm = $"%{searchTerm.ToLower()}%";
+            return await FindAsync(c => !String.IsNullOrEmpty(c.LastName) && EF.Functions.Like(c.LastName.ToLower(), loweredTerm),page,pageSize);
+        }
     }
 }

@@ -1,7 +1,5 @@
-using System.Linq;
-using System.Threading.Tasks;
-using JobMarket.Ef;
 using JobMarket.Data.Entity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -88,6 +86,96 @@ namespace JobMarket.Ef.Tests
 
                 Assert.NotNull(result);
                 Assert.Empty(result);
+            }
+        }
+        private static JobMarketContext CreateInMemoryContext(string dbName)
+        {
+            var options = new DbContextOptionsBuilder<JobMarketContext>()
+                .UseInMemoryDatabase(dbName)
+                .Options;
+            return new JobMarketContext(options);
+        }
+
+        [Fact]
+        public async Task GetContractorByUserIdAsync_ReturnsContractor_WhenUserHasContractor()
+        {
+            // Arrange
+            var dbName = Guid.NewGuid().ToString();
+            using (var context = CreateInMemoryContext(dbName))
+            {
+                var user = new IdentityUser { Id = "user-1", UserName = "alice" };
+                context.Users.Add(user);
+
+                var contractor = new Contractor { ID = 3, Name = "Acme Corp" };
+                context.Contractor.Add(contractor);
+
+                var mapping = new ContractorUser { ID = 3, UserId = user.Id, ContractorId = contractor.ID };
+                context.ContractorUser.Add(mapping);
+
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = CreateInMemoryContext(dbName))
+            {
+                var repo = new ContractorRepository(context);
+
+                // Act
+                var result = await repo.GetContractorByUserIdAsync("alice");
+
+                // Assert
+                Assert.NotNull(result);
+                Assert.Equal(3, result.ID);
+                Assert.Equal("Acme Corp", result.Name);
+            }
+        }
+
+        [Fact]
+        public async Task GetContractorByUserIdAsync_Throws_WhenUserHasNoContractorMapping()
+        {
+            // Arrange
+            var dbName = Guid.NewGuid().ToString();
+            using (var context = CreateInMemoryContext(dbName))
+            {
+                var user = new IdentityUser { Id = "user-2", UserName = "bob" };
+                context.Users.Add(user);
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = CreateInMemoryContext(dbName))
+            {
+                var repo = new ContractorRepository(context);
+
+                // Act & Assert
+                var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                {
+                    await repo.GetContractorByUserIdAsync("bob");
+                });
+
+                Assert.Contains("No contractor found for user ID", ex.Message);
+            }
+        }
+
+        [Fact]
+        public async Task GetContractorByUserIdAsync_Throws_WhenUserNotFound()
+        {
+            // Arrange
+            var dbName = Guid.NewGuid().ToString();
+            using (var context = CreateInMemoryContext(dbName))
+            {
+                // no users seeded
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = CreateInMemoryContext(dbName))
+            {
+                var repo = new ContractorRepository(context);
+
+                // Act & Assert
+                await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                {
+                    // underlying SingleAsync on Users should throw because the user does not exist
+                    await repo.GetContractorByUserIdAsync("nonexistent");
+                });
             }
         }
     }

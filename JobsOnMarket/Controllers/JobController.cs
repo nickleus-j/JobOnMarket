@@ -2,7 +2,6 @@
 using FluentValidation;
 using JobMarket.Data;
 using JobMarket.Data.Entity;
-using JobMarket.Ef;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

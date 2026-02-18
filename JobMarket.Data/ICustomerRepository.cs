@@ -8,5 +8,6 @@ namespace JobMarket.Data
     public interface ICustomerRepository:IRepository<Customer>
     {
         Task<IList<Customer>> SearchCustomerAsync(string searchTerm);
+        Task<IList<Customer>> SearchCustomerAsync(string searchTerm, int page, int pageSize = 10);
     }
 }
