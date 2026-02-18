@@ -30,5 +30,11 @@ namespace JobsOnMarket.Controllers
             var customers = await UnitOfWork.ContractorRepository.SearchContractor(q);
             return Ok(customers);
         }
+        [HttpGet("{q}/{page}")]
+        public async Task<IActionResult> Get(string q, int page, [FromQuery] int pageSize = 10)
+        {
+            var customers = await UnitOfWork.ContractorRepository.SearchContractor(q,page,pageSize);
+            return Ok(customers);
+        }
     }
 }

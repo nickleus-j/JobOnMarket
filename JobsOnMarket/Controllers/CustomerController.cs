@@ -25,9 +25,15 @@ namespace JobsOnMarket.Controllers
             return Ok(customers);
         }
         [HttpGet("{q}")]
-        public async Task<IActionResult> Get(string q, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> Get(string q)
         {
-            var customers= await UnitOfWork.CustomerRepository.SearchCustomerAsync(q,page,pageSize);
+            var customers= await UnitOfWork.CustomerRepository.SearchCustomerAsync(q);
+            return Ok(customers);
+        }
+        [HttpGet("{q}/{page}")]
+        public async Task<IActionResult> Get(string q, int page, [FromQuery] int pageSize = 10)
+        {
+            var customers = await UnitOfWork.CustomerRepository.SearchCustomerAsync(q, page, pageSize);
             return Ok(customers);
         }
     }

@@ -34,7 +34,7 @@ namespace JobMarket.Ef
 
         public async Task<IList<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, int page, int pageSize=10)
         {
-            return await Context.Set<TEntity>().Where(predicate).Skip(page-1).Take(pageSize).ToListAsync();
+            return await Context.Set<TEntity>().Where(predicate).Skip((page-1)*pageSize).Take(pageSize).ToListAsync();
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()

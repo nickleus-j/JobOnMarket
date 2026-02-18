@@ -28,6 +28,11 @@ namespace JobMarket.Ef
             string loweredTerm = $"%{searchTerm.ToLower()}%";
             return await FindAsync(c => !String.IsNullOrEmpty(c.Name) && EF.Functions.Like(c.Name.ToLower(), loweredTerm));
         }
+        public async Task<IList<Contractor>> SearchContractor(string searchTerm, int page, int pageSize = 10)
+        {
+            string loweredTerm = $"%{searchTerm.ToLower()}%";
+            return await FindAsync(c => !String.IsNullOrEmpty(c.Name) && EF.Functions.Like(c.Name.ToLower(), loweredTerm),page,pageSize);
+        }
         public async Task<Contractor> GetContractorByUserIdAsync(string userName)
         {
             var identityUser=await marketContext.Users.SingleAsync(u => u.UserName == userName); // Ensure user exists
@@ -38,5 +43,6 @@ namespace JobMarket.Ef
             }
             throw new InvalidOperationException($"No contractor found for user ID: {userName}");
         }
+
     }
 }

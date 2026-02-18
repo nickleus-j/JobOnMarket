@@ -82,6 +82,55 @@ namespace JobMarket.Ef.Tests
                 Assert.Empty(result);
             }
         }
+        [Fact]
+        public async Task SearchCustomerAsync_Pagination_PartialCaseInsensitive_ReturnsMatches()
+        {
+            DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
+                .UseInMemoryDatabase(databaseName: "jobMarkPage").Options;
 
+            using (var context = new JobMarketContext(dbContextOptions))
+            {
+                context.Database.EnsureCreated();
+
+                context.Customer.Add(new Customer { ID = 33, FirstName = "John", LastName = "Moe" });
+                context.Customer.Add(new Customer { ID = 34, FirstName = "Alex", LastName = "moe-sample" });
+                context.Customer.Add(new Customer { ID = 35, FirstName = "Empty", LastName = "Han" }); // should be ignored
+                context.Customer.Add(new Customer { ID = 32, FirstName = "Joe", LastName = "Samoewa" });
+                await context.SaveChangesAsync();
+
+                var repo = new CustomerRepository(context);
+
+                // partial, case-insensitive search
+                var result = await repo.SearchCustomerAsync("MoE",1,2);
+
+                Assert.Equal(2, result.Count);
+                Assert.Contains(result, c => c.ID == 33);
+                Assert.DoesNotContain(result, c => c.ID == 35);
+            }
+        }
+        [Fact]
+        public async Task SearchCustomerAsync_Page2_PartialCaseInsensitive_ReturnsMatches()
+        {
+            DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
+                .UseInMemoryDatabase(databaseName: "jobMarkPage2").Options;
+
+            using (var context = new JobMarketContext(dbContextOptions))
+            {
+                context.Database.EnsureCreated();
+
+                context.Customer.Add(new Customer { ID = 33, FirstName = "John", LastName = "Moe" });
+                context.Customer.Add(new Customer { ID = 34, FirstName = "Alex", LastName = "moe-sample" });
+                context.Customer.Add(new Customer { ID = 35, FirstName = "Empty", LastName = "Han" }); // should be ignored
+                context.Customer.Add(new Customer { ID = 32, FirstName = "Joe", LastName = "Samoewa" });
+                await context.SaveChangesAsync();
+
+                var repo = new CustomerRepository(context);
+
+                // partial, case-insensitive search
+                var result = await repo.SearchCustomerAsync("MoE", 2, 2);
+
+                Assert.Single(result);
+            }
+        }
     }
 }

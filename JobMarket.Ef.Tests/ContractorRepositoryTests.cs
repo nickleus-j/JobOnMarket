@@ -64,6 +64,61 @@ namespace JobMarket.Ef.Tests
             }
         }
         [Fact]
+        public async Task SearchContractorPagination_WithNameSubstring_IsCaseInsensitiveAndPartialMatch()
+        {
+            DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
+                .UseInMemoryDatabase(databaseName: "jobMarkWithMatchPage").Options;
+
+            using (var context = new JobMarketContext(dbContextOptions))
+            {
+                context.Database.EnsureCreated();
+
+                // Seed data
+                context.Contractor.AddRange(
+                    new Contractor { ID = 11, Name = "Gin co", Rating = 3 },
+                    new Contractor { ID = 12, Name = "Generic Co", Rating = 4 },
+                    new Contractor { ID = 13, Name = "Another Gin Branch", Rating = 5 },
+                    new Contractor { ID = 14, Name = "Some Gin co", Rating = 3 }
+                );
+                context.SaveChanges();
+
+                var repo = new ContractorRepository(context);
+
+                var result = await repo.SearchContractor("Gin",1,2);
+
+                // Expect both entries that contain "acme" in the name (case-insensitive)
+                Assert.Equal(2, result.Count);
+                Assert.Contains(result, c => c.ID == 11 && c.Name == "Gin co");
+                Assert.Contains(result, c => c.ID == 13 && c.Name == "Another Gin Branch");
+            }
+        }
+        [Fact]
+        public async Task SearchContractorPage2_WithNameSubstring_IsCaseInsensitiveAndPartialMatch()
+        {
+            DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
+                .UseInMemoryDatabase(databaseName: "jobMarkWithMatchPage2").Options;
+
+            using (var context = new JobMarketContext(dbContextOptions))
+            {
+                context.Database.EnsureCreated();
+
+                // Seed data
+                context.Contractor.AddRange(
+                    new Contractor { ID = 11, Name = "Gin co", Rating = 3 },
+                    new Contractor { ID = 12, Name = "Generic Co", Rating = 4 },
+                    new Contractor { ID = 13, Name = "Another Gin Branch", Rating = 5 },
+                    new Contractor { ID = 14, Name = "Some Gin co", Rating = 3 }
+                );
+                context.SaveChanges();
+
+                var repo = new ContractorRepository(context);
+
+                var result = await repo.SearchContractor("Gin", 2, 2);
+
+                Assert.Single(result);
+            }
+        }
+        [Fact]
         public async Task SearchContractor_NoMatches_ReturnsEmptyList()
         {
             DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
