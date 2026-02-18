@@ -17,7 +17,16 @@ namespace JobMarket.Ef
         {
             get { return Context as JobMarketContext; }
         }
-
+        public async Task<Customer> GetCustomerByUserIdAsync(string userName)
+        {
+            var identityUser = await marketContext.Users.SingleAsync(u => u.UserName == userName); // Ensure user exists
+            var customerUser = await marketContext.CustomerUser.SingleOrDefaultAsync(cu => cu.UserId == identityUser.Id);
+            if (customerUser != null)
+            {
+                return await SingleAsync(c => c.ID == customerUser.CustomerId);
+            }
+            throw new InvalidOperationException($"No Customer found for user ID: {userName}");
+        }
         public async Task<IList<Customer>> SearchCustomerAsync(string searchTerm)
         {
             int Id;

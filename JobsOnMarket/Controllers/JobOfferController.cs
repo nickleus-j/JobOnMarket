@@ -70,12 +70,13 @@ namespace JobsOnMarket.Controllers
             return Ok(entity);
         }
         [Authorize(Roles = "Customer")]
-        [HttpPut("AcceptJobOffer/{offerId}/{customerId}")]
-        public async Task<ActionResult> AcceptJobOffer(int offerId, int customerId)
+        [HttpPut("AcceptJobOffer/{offerId}")]
+        public async Task<ActionResult> AcceptJobOffer(int offerId)
         {
             try
             {
-                int jobId=await UnitOfWork.JobOfferRepository.AcceptJobOffer(offerId, customerId);
+                var customer = await UnitOfWork.CustomerRepository.GetCustomerByUserIdAsync(User.Identity.Name);
+                int jobId=await UnitOfWork.JobOfferRepository.AcceptJobOffer(offerId, customer.ID);
                 return Ok(await UnitOfWork.JobRepository.SingleAsync(j => j.ID == jobId));
             }
             catch (DbUpdateException dbe)
@@ -83,7 +84,7 @@ namespace JobsOnMarket.Controllers
                 return BadRequest(dbe.Message);
             }
         }
-        [Authorize]
+        [Authorize(Roles = "Contractor")]
         [HttpDelete()]
         public async Task<ActionResult> Delete([FromBody] JobOffer entity)
         {
