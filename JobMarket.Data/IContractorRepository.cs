@@ -8,5 +8,6 @@ namespace JobMarket.Data
     public interface IContractorRepository: IRepository<Contractor>
     {
         Task<IList<Contractor>> SearchContractor(string searchTerm);
+        Task<Contractor> GetContractorByUserIdAsync(string userName);
     }
 }

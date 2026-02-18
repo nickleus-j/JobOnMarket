@@ -24,6 +24,8 @@ namespace JobMarket.Ef
         public virtual DbSet<Contractor> Contractor { get; set; }
         public virtual DbSet<Job> Job { get; set; }
         public virtual DbSet<JobOffer> JobOffer { get; set; }
+        public virtual DbSet<CustomerUser> CustomerUser { get; set; }
+        public virtual DbSet<ContractorUser> ContractorUser { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -96,8 +98,8 @@ namespace JobMarket.Ef
                 modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string> { RoleId = roleIds.ElementAt(i), UserId = "8e445800-aaaa-4543-aaaa-9443d048cdb9".Replace("a",i.ToString()) });
             }
             modelBuilder.Entity<CustomerUser>().HasData(new CustomerUser { ID = 1, UserId = userIds[0], CustomerId = 1 },
-                new CustomerUser { ID = 2, UserId = userIds[1], CustomerId = 2 });
-            modelBuilder.Entity<ContractorUser>().HasData(new ContractorUser { ID = 1, UserId = userIds[2], ContractorId = 1 }
+                new CustomerUser { ID = 2, UserId = userIds[2], CustomerId = 2 });
+            modelBuilder.Entity<ContractorUser>().HasData(new ContractorUser { ID = 1, UserId = userIds[1], ContractorId = 1 }
                 , new ContractorUser { ID=2,UserId = userIds[3], ContractorId = 2});
         }
         public void HashUserPasswordsIfNeeded(string defaultPassword= "aPassword123!")

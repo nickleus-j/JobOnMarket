@@ -13,9 +13,11 @@ namespace JobsOnMarket.Controllers
     public class JobOfferController : ControllerBase
     {
         private IDataUnitOfWork UnitOfWork;
-        public JobOfferController(IDataUnitOfWork unitOfWork)
+        private readonly UserManager<IdentityUser> _userManager;
+        public JobOfferController(IDataUnitOfWork unitOfWork, UserManager<IdentityUser> userManager)
         {
             this.UnitOfWork = unitOfWork;
+            _userManager = userManager;
         }
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
@@ -39,6 +41,8 @@ namespace JobsOnMarket.Controllers
         {
             try
             {
+                var contractor = await UnitOfWork.ContractorRepository.GetContractorByUserIdAsync(User.Identity.Name);
+                entity.OfferedByContractorId = contractor.ID;
                 await UnitOfWork.JobOfferRepository.AddAsync(entity);
                 await UnitOfWork.CompleteAsync();
             }
