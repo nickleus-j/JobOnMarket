@@ -31,6 +31,7 @@ namespace JobsOnMarket.Controllers
             {
                 // Fix: Ensure correct Claim constructor is used (type, value)
                 var authClaims = new List<Claim> {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
@@ -42,7 +43,6 @@ namespace JobsOnMarket.Controllers
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
                 var token = GetToken(authClaims);
-
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -100,6 +100,40 @@ namespace JobsOnMarket.Controllers
                 );
 
             return token;
+        }
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Get the current user based on the authenticated principal (from the JWT)
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Change the password using the UserManager
+            var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.OldPassword, changePasswordDto.NewPassword);
+
+            if (result.Succeeded)
+            {
+                // Sign out the user to invalidate the current JWT and force re-login with the new password
+                // This is a common security practice for JWTs after a password change.
+                // In a pure API scenario, the client is responsible for discarding the old token.
+                return Ok("Password changed successfully. Please log in again with your new password.");
+            }
+
+            // Handle errors
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return BadRequest(ModelState);
         }
     }
 }

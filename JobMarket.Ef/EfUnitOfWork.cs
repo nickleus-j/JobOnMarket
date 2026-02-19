@@ -6,6 +6,9 @@ using System.Text;
 
 namespace JobMarket.Ef
 {
+    /// <summary>
+    /// Entity Framework Unit of work that will contain the data context and data repositories.
+    /// </summary>
     public class EfUnitOfWork : IDataUnitOfWork
     {
         private readonly JobMarketContext _context;
@@ -28,6 +31,10 @@ namespace JobMarket.Ef
             CustomerUserRepository = new CustomerUserRepository(_context);
             ContractorUserRepository = new ContractorUserRepository(_context);
         }
+        /// <summary>
+        /// Save Changes
+        /// </summary>
+        /// <returns></returns>
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();
