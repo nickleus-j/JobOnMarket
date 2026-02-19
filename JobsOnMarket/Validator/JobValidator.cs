@@ -15,11 +15,18 @@ namespace JobsOnMarket.Validator
             RuleFor(x => x.Description)
                 .Must(TextHasContent)
                 .WithMessage("Text must have Content");
+            RuleFor(x=>x)
+                .Must(BeLaterThanOtherDate)
+                .WithMessage("The event due date must be later than the current date.");
         }
 
         private bool BeNowOrInTheFuture(DateTime date)
         {
             return date >= DateTime.Now;
+        }
+        private bool BeLaterThanOtherDate(Job job)
+        {
+            return job.DueDate >= job.StartDate;
         }
         private bool TextHasContent(string? text)
         {

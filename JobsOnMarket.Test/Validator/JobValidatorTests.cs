@@ -42,7 +42,20 @@ namespace JobsOnMarket.Validator.Tests
 
             Assert.DoesNotContain(result.Errors, e => e.PropertyName == nameof(Job.StartDate));
         }
+        [Fact]
+        public void StartDate_InFutureButLaterThanDueDate_ShouldHaveValidationError()
+        {
+            var job = new Job
+            {
+                StartDate = DateTime.Now.AddHours(2),
+                DueDate = DateTime.Now.AddHours(1),
+                Description = "invalid description"
+            };
 
+            var result = _validator.Validate(job);
+
+            Assert.Single(result.Errors);
+        }
         [Fact]
         public void DueDate_InPast_ShouldHaveValidationError()
         {
