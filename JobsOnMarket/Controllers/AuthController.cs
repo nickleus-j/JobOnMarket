@@ -26,6 +26,10 @@ namespace JobsOnMarket.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Returns 400 Bad Request with error details
+            }
             var user = await _userManager.FindByNameAsync(model.UserName);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.UnhashedPassword))
             {

@@ -100,7 +100,7 @@ app.UseSwagger(options =>
 });
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "A .NET 10 API");
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Jobs On Market API");
     options.RoutePrefix = string.Empty; // Swagger at root URL
 });
 app.UseHttpsRedirection();
