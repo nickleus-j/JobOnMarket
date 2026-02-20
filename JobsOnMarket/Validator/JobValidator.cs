@@ -16,7 +16,7 @@ namespace JobsOnMarket.Validator
                 .Must(TextHasContent)
                 .WithMessage("Text must have Content");
             RuleFor(x=>x)
-                .Must(BeLaterThanOtherDate)
+                .Must(DueDateLaterThanStartDate)
                 .WithMessage("The event due date must be later than the current date.");
         }
 
@@ -24,7 +24,7 @@ namespace JobsOnMarket.Validator
         {
             return date >= DateTime.Now;
         }
-        private bool BeLaterThanOtherDate(Job job)
+        private bool DueDateLaterThanStartDate(Job job)
         {
             return job.DueDate >= job.StartDate;
         }

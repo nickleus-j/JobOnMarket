@@ -1,5 +1,3 @@
-using System.Linq;
-using Xunit;
 using JobsOnMarket.Dto;
 using JobsOnMarket.Validator;
 
@@ -14,7 +12,7 @@ namespace JobsOnMarket.Tests.Validator
         {
             var dto = new LoginDto
             {
-                UserName = "jane",
+                UserName = "jane@somehwere.com",
                 UnhashedPassword = "secret1"
             };
 
@@ -39,7 +37,20 @@ namespace JobsOnMarket.Tests.Validator
             Assert.True(result.Errors.Any(e => e.PropertyName == nameof(dto.UserName) && e.ErrorMessage == expected),
                 $"Expected a validation error for {nameof(dto.UserName)} with message: {expected}");
         }
+        [Fact]
+        public void Validate_NonEmailUserName_Fails()
+        {
+            var dto = new LoginDto
+            {
+                UserName = "some1",
+                UnhashedPassword = "secret1"
+            };
 
+            var result = _validator.Validate(dto);
+
+            Assert.False(result.IsValid);
+            Assert.Contains(result.Errors, e => e.PropertyName == nameof(dto.UserName));
+        }
         [Fact]
         public void Validate_WhitespaceUserName_FailsWithUserNameMessage()
         {
@@ -62,7 +73,7 @@ namespace JobsOnMarket.Tests.Validator
         {
             var dto = new LoginDto
             {
-                UserName = "john",
+                UserName = "john@somehwere.com",
                 UnhashedPassword = "12345" // 5 chars, less than 6
             };
 
@@ -79,7 +90,7 @@ namespace JobsOnMarket.Tests.Validator
         {
             var dto = new LoginDto
             {
-                UserName = "Doe",
+                UserName = "Doe@somehwere.com",
                 UnhashedPassword = null
             };
 

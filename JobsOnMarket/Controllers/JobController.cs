@@ -88,7 +88,7 @@ namespace JobsOnMarket.Controllers
             }
             return Ok(entity);
         }
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {

@@ -53,7 +53,7 @@ namespace JobsOnMarket.Validator.Tests
             };
 
             var result = _validator.Validate(job);
-
+            
             Assert.Single(result.Errors);
         }
         [Fact]
@@ -83,7 +83,7 @@ namespace JobsOnMarket.Validator.Tests
             };
 
             var result = _validator.Validate(job);
-
+            Assert.True(result.IsValid);
             Assert.DoesNotContain(result.Errors, e => e.PropertyName == nameof(Job.DueDate));
         }
 

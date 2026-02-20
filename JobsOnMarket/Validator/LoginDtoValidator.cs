@@ -9,10 +9,10 @@ namespace JobsOnMarket.Validator
             RuleFor(x => x.UserName)
                 .Must(MustNotBeEmpty)
                 .WithMessage("UserName must nopt be empty nor WhiteSpace");
+            RuleFor(x => x.UserName).EmailAddress().WithMessage("UserName must be a valid email address");
             RuleFor(x => x.UnhashedPassword)
                 .Must(TextMustBeAtLeast6Chars)
                 .WithMessage("Password Must have at least 6 Characters");
-            
         }
 
         private bool MustNotBeEmpty(string text)

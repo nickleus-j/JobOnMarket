@@ -4,10 +4,10 @@ namespace JobsOnMarket.Dto;
 
 public class RegistrationDto:LoginDto
 {
-    [MinLength(5)]
+    [MinLength(1)]
     public string FirstName { get; set; }
-    [MinLength(6)]
+    [MinLength(1)]
     public string Surname { get; set; }
     [MinLength(1)]
-    public string RoleName { get; set; }
+    public required string RoleName { get; set; }
 }

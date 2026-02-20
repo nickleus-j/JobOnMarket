@@ -1,6 +1,5 @@
 ﻿using JobsOnMarket.Dto;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -18,12 +17,12 @@ namespace JobsOnMarket.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
-        private IDataUnitOfWork dataUnitOfWork;
+        private IDataUnitOfWork _dataUnitOfWork;
         public AuthController(UserManager<IdentityUser> userManager, IConfiguration configuration,IDataUnitOfWork  dataUnitOfWork)
         {
             this._userManager = userManager;
             this._configuration = configuration;
-            this.dataUnitOfWork = dataUnitOfWork;
+            this._dataUnitOfWork = dataUnitOfWork;
         }
 
         [HttpPost("login")]
@@ -164,11 +163,11 @@ namespace JobsOnMarket.Controllers
                         FirstName = dto.FirstName,
                         LastName = dto.Surname,
                     };
-                    await dataUnitOfWork.CustomerRepository.AddAsync(customer);
-                    await dataUnitOfWork.CompleteAsync();
+                    await _dataUnitOfWork.CustomerRepository.AddAsync(customer);
+                    await _dataUnitOfWork.CompleteAsync();
                     
-                    await dataUnitOfWork.CustomerUserRepository.AddAsync(new CustomerUser {UserId = user.Id,CustomerId = customer.ID});
-                    await dataUnitOfWork.CompleteAsync();
+                    await _dataUnitOfWork.CustomerUserRepository.AddAsync(new CustomerUser {UserId = user.Id,CustomerId = customer.ID});
+                    await _dataUnitOfWork.CompleteAsync();
                 }
                 else if (dto.RoleName.Equals("Contractor", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -177,11 +176,11 @@ namespace JobsOnMarket.Controllers
                         Name = dto.FirstName + " " + dto.Surname,
                         Rating = 0,
                     };
-                    await dataUnitOfWork.ContractorRepository.AddAsync(contractor);
-                    await dataUnitOfWork.CompleteAsync();
+                    await _dataUnitOfWork.ContractorRepository.AddAsync(contractor);
+                    await _dataUnitOfWork.CompleteAsync();
                     
-                    await dataUnitOfWork.ContractorUserRepository.AddAsync(new ContractorUser() {UserId = user.Id,ContractorId = contractor.ID});
-                    await dataUnitOfWork.CompleteAsync();
+                    await _dataUnitOfWork.ContractorUserRepository.AddAsync(new ContractorUser() {UserId = user.Id,ContractorId = contractor.ID});
+                    await _dataUnitOfWork.CompleteAsync();
                 }
                 if (result.Succeeded)
                 {
