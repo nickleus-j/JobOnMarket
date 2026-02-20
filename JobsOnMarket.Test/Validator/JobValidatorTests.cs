@@ -1,13 +1,13 @@
 ﻿
-using System;
-using Xunit;
-using JobsOnMarket.Validator;
+
 using JobMarket.Data.Entity;
 using FluentValidation.Results;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace JobsOnMarket.Validator.Tests
 {
+    [TestSubject(typeof(JobValidator))]
     public class JobValidatorTests
     {
         private readonly JobValidator _validator = new JobValidator();

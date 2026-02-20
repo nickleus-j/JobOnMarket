@@ -7,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using JobMarket.Data;
+using JobMarket.Data.Entity;
 
 namespace JobsOnMarket.Controllers
 {
@@ -16,11 +18,12 @@ namespace JobsOnMarket.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
-
-        public AuthController(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        private IDataUnitOfWork dataUnitOfWork;
+        public AuthController(UserManager<IdentityUser> userManager, IConfiguration configuration,IDataUnitOfWork  dataUnitOfWork)
         {
-            _userManager = userManager;
-            _configuration = configuration;
+            this._userManager = userManager;
+            this._configuration = configuration;
+            this.dataUnitOfWork = dataUnitOfWork;
         }
 
         [HttpPost("login")]
@@ -33,18 +36,7 @@ namespace JobsOnMarket.Controllers
             var user = await _userManager.FindByNameAsync(model.UserName);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.UnhashedPassword))
             {
-                // Fix: Ensure correct Claim constructor is used (type, value)
-                var authClaims = new List<Claim> {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id),
-                    new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-                var userRoles = await _userManager.GetRolesAsync(user);
-                foreach (var role in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, role));
-                }
-
+                var authClaims = await GetClaimsOfUser(user);
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
                 var token = GetToken(authClaims);
                 return Ok(new
@@ -91,7 +83,7 @@ namespace JobsOnMarket.Controllers
 
             return Ok(new { message = $"Role set to {role} for user {user.UserName}." });
         }
-        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        private JwtSecurityToken GetToken(IList<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 
@@ -104,6 +96,21 @@ namespace JobsOnMarket.Controllers
                 );
 
             return token;
+        }
+
+        private async Task<IList<Claim>> GetClaimsOfUser(IdentityUser user)
+        {
+            var authClaims = new List<Claim> {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+            var userRoles = await _userManager.GetRolesAsync(user);
+            foreach (var role in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            return authClaims;
         }
         [Authorize]
         [HttpPost("change-password")]
@@ -138,6 +145,53 @@ namespace JobsOnMarket.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
             return BadRequest(ModelState);
+        }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegistrationDto dto) {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Returns 400 Bad Request with error details
+            }
+            var user = new IdentityUser { UserName = dto.UserName, Email = dto.UserName };
+            try
+            {
+                var result = await _userManager.CreateAsync(user, dto.UnhashedPassword);
+                var role=await _userManager.AddToRoleAsync(user, dto.RoleName);
+                if (dto.RoleName.Equals("Customer", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var customer = new Customer
+                    {
+                        FirstName = dto.FirstName,
+                        LastName = dto.Surname,
+                    };
+                    await dataUnitOfWork.CustomerRepository.AddAsync(customer);
+                    await dataUnitOfWork.CompleteAsync();
+                    
+                    await dataUnitOfWork.CustomerUserRepository.AddAsync(new CustomerUser {UserId = user.Id,CustomerId = customer.ID});
+                    await dataUnitOfWork.CompleteAsync();
+                }
+                else if (dto.RoleName.Equals("Contractor", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var contractor = new Contractor
+                    {
+                        Name = dto.FirstName + " " + dto.Surname,
+                        Rating = 0,
+                    };
+                    await dataUnitOfWork.ContractorRepository.AddAsync(contractor);
+                    await dataUnitOfWork.CompleteAsync();
+                    
+                    await dataUnitOfWork.ContractorUserRepository.AddAsync(new ContractorUser() {UserId = user.Id,ContractorId = contractor.ID});
+                    await dataUnitOfWork.CompleteAsync();
+                }
+                if (result.Succeeded)
+                {
+                    return await Login(dto);
+                }
+                return BadRequest(result.Errors);
+            }catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
