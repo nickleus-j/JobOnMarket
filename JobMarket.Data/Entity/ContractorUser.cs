@@ -6,6 +6,7 @@ using System.Text;
 
 namespace JobMarket.Data.Entity
 {
+    [Table("ContractorUser")]
     public class ContractorUser
     {
         [Key]

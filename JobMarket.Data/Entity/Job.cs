@@ -17,10 +17,14 @@ namespace JobMarket.Data.Entity
         [DefaultValue(0.0)]
         [Range(0.00, 999999.99, ErrorMessage = "Budget must be between 0.00 and 999999.99")]
         public double Budget { get; set; }
+        [DefaultValue(1)]
+        public Nullable<int> BudgetCurrencyId { get; set; }
         [Column(TypeName = "text")]
         public string? Description { get; set; }
         public Nullable<int> AcceptedById { get;set;  }
         [ForeignKey("AcceptedById")]
         public Customer? AcceptedBy { get; set; }
+        [ForeignKey("BudgetCurrencyId")]
+        public Currency? BudgetCurrency { get; set; }
     }
 }

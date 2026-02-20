@@ -17,6 +17,7 @@ namespace JobsOnMarket.Validator.Tests
         {
             var job = new Job
             {
+                BudgetCurrencyId = 1,
                 StartDate = DateTime.Now.AddMinutes(-10),
                 DueDate = DateTime.Now.AddHours(1),
                 Description = "Valid description"
@@ -33,6 +34,7 @@ namespace JobsOnMarket.Validator.Tests
         {
             var job = new Job
             {
+                BudgetCurrencyId = 1,
                 StartDate = DateTime.Now.AddMinutes(1),
                 DueDate = DateTime.Now.AddHours(1),
                 Description = "Valid description"
@@ -47,6 +49,7 @@ namespace JobsOnMarket.Validator.Tests
         {
             var job = new Job
             {
+                BudgetCurrencyId = 1,
                 StartDate = DateTime.Now.AddHours(2),
                 DueDate = DateTime.Now.AddHours(1),
                 Description = "invalid description"
@@ -61,6 +64,7 @@ namespace JobsOnMarket.Validator.Tests
         {
             var job = new Job
             {
+                BudgetCurrencyId = 1,
                 StartDate = DateTime.Now.AddHours(1),
                 DueDate = DateTime.Now.AddMinutes(-5),
                 Description = "Valid description"
@@ -77,6 +81,7 @@ namespace JobsOnMarket.Validator.Tests
         {
             var job = new Job
             {
+                BudgetCurrencyId = 1,
                 StartDate = DateTime.Now.AddMinutes(1),
                 DueDate = DateTime.Now.AddHours(2),
                 Description = "Valid description"
@@ -95,6 +100,7 @@ namespace JobsOnMarket.Validator.Tests
         {
             var job = new Job
             {
+                BudgetCurrencyId = 1,
                 StartDate = DateTime.Now.AddMinutes(1),
                 DueDate = DateTime.Now.AddHours(1),
                 Description = desc
@@ -111,6 +117,7 @@ namespace JobsOnMarket.Validator.Tests
         {
             var job = new Job
             {
+                BudgetCurrencyId = 1,
                 StartDate = DateTime.Now.AddMinutes(1),
                 DueDate = DateTime.Now.AddHours(1),
                 Description = "Has content"
@@ -119,6 +126,20 @@ namespace JobsOnMarket.Validator.Tests
             var result = _validator.Validate(job);
 
             Assert.DoesNotContain(result.Errors, e => e.PropertyName == nameof(Job.Description));
+        }
+        [Fact]
+        public void HasCurrency_ShouldNotHaveValidationError()
+        {
+            var job = new Job
+            {
+                BudgetCurrencyId = 2,
+                StartDate = DateTime.Now.AddMinutes(1),
+                DueDate = DateTime.Now.AddHours(1),
+                Description = "A job"
+            };
+
+            var result = _validator.Validate(job);
+            Assert.True(result.IsValid);
         }
     }
 }

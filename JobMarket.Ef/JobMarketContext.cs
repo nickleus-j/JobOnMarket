@@ -1,4 +1,5 @@
 ﻿using JobMarket.Data.Entity;
+using JobMarket.Ef.Util;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,8 @@ namespace JobMarket.Ef
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            CurrencyLister lister= new CurrencyLister();
+            modelBuilder.Entity<Currency>().HasData(lister.GetCurrencies());
             modelBuilder.Entity<Customer>().HasData(
                 new Customer { ID = 1, FirstName = "John",LastName="Doe" },
                 new Customer { ID = 2, FirstName = "Jane", LastName = "Dow" }
