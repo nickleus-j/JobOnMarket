@@ -1,5 +1,6 @@
 ﻿using JobMarket.Data;
 using JobMarket.Data.Entity;
+using JobsOnMarket.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -77,7 +78,11 @@ namespace JobsOnMarket.Controllers
             {
                 var customer = await UnitOfWork.CustomerRepository.GetCustomerByUserNameAsync(User.Identity.Name);
                 int jobId=await UnitOfWork.JobOfferRepository.AcceptJobOffer(offerId, customer.ID);
-                return Ok(await UnitOfWork.JobRepository.SingleAsync(j => j.ID == jobId));
+                Job job = await UnitOfWork.JobRepository.SingleAsync(j => j.ID == jobId);
+                var dto = JobMapper.MapToDto(job,
+                    await UnitOfWork.CurrencyRepository.FindAsync(c => c.Id == job.BudgetCurrencyId));
+                UnitOfWork.Dispose();
+                return Ok(dto);
             }
             catch (DbUpdateException dbe)
             {
@@ -92,6 +97,7 @@ namespace JobsOnMarket.Controllers
             {
                 UnitOfWork.JobOfferRepository.Remove(entity);
                 await UnitOfWork.CompleteAsync();
+                UnitOfWork.Dispose();
             }
             catch (DbUpdateException dbe)
             {

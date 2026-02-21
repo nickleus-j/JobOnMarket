@@ -26,14 +26,14 @@ namespace JobsOnMarket.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto model)
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState); // Returns 400 Bad Request with error details
             }
-            var user = await _userManager.FindByNameAsync(model.UserName);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.UnhashedPassword))
+            var user = await _userManager.FindByNameAsync(dto.UserName);
+            if (user != null && await _userManager.CheckPasswordAsync(user, dto.UnhashedPassword))
             {
                 var authClaims = await GetClaimsOfUser(user);
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));

@@ -33,13 +33,16 @@ namespace JobsOnMarket.Controllers
 
             var jobs = await UnitOfWork.JobRepository.GetFromPageAsync(page, pageSize, "ID");
             var dtoList= JobMapper.MapToDtos(jobs,await UnitOfWork.CurrencyRepository.GetAllAsync());
+            UnitOfWork.Dispose();
             return Ok(dtoList);
         }
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(int id)
         {
-            var jobs=await UnitOfWork.JobRepository.GetAsync(id);
-            return Ok(jobs);
+            var job=await UnitOfWork.JobRepository.GetAsync(id);
+            var dto= JobMapper.MapToDto(job,await UnitOfWork.CurrencyRepository.FindAsync(c=>c.Id==job.BudgetCurrencyId));
+            UnitOfWork.Dispose();
+            return Ok(dto);
         }
         [Authorize(Roles = "Customer")]
         [HttpPost]
@@ -71,7 +74,7 @@ namespace JobsOnMarket.Controllers
         }
         [Authorize(Roles = "Customer")]
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] Job entity)
+        public async Task<ActionResult> Put([FromBody] JobDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -80,6 +83,9 @@ namespace JobsOnMarket.Controllers
             
             try
             {
+                var currencies = await UnitOfWork.CurrencyRepository.FindAsync(c =>
+                    String.Equals(c.Code.ToLower(), dto.CurrencyCode.ToLower()));
+                var entity = JobMapper.MapToJob(dto, currencies);
                 UnitOfWork.JobRepository.Update(entity);
                 await UnitOfWork.CompleteAsync();
             }
@@ -87,7 +93,7 @@ namespace JobsOnMarket.Controllers
             {
                 return BadRequest(dbe.Message);
             }
-            return Ok(entity);
+            return Ok(dto);
         }
         [Authorize(Roles = "Customer")]
         [HttpDelete("{id}")]

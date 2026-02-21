@@ -3,7 +3,6 @@ using JobMarket.Ef;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace JobMarket.Ef.Tests
@@ -16,7 +15,7 @@ namespace JobMarket.Ef.Tests
             DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
                 .UseInMemoryDatabase(databaseName: "jobMark").Options;
 
-            using (var context = new JobMarketContext(dbContextOptions))
+            await using (var context = new JobMarketContext(dbContextOptions))
             {
                 context.Database.EnsureCreated();
 
@@ -38,7 +37,7 @@ namespace JobMarket.Ef.Tests
         public async Task SearchCustomerAsync_ByLastName_PartialCaseInsensitive_ReturnsMatches()
         {
             DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
-                .UseInMemoryDatabase(databaseName: "jobMark").Options;
+                .UseInMemoryDatabase(databaseName: "jobMarking").Options;
 
             using (var context = new JobMarketContext(dbContextOptions))
             {
@@ -136,7 +135,7 @@ namespace JobMarket.Ef.Tests
         public async Task SearchUsername_PartialCaseInsensitive_ReturnsMatches()
         {
             DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
-                .UseInMemoryDatabase(databaseName: "jobMark").Options;
+                .UseInMemoryDatabase(databaseName: "jobMarkMatchSearch").Options;
 
             using (var context = new JobMarketContext(dbContextOptions))
             {

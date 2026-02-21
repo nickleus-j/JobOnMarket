@@ -46,7 +46,14 @@ namespace JobMarket.Ef
         {
             return await Context.Set<TEntity>().FindAsync(id);
         }
-
+        /// <summary>
+        /// Get Content divided into pages.
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="orderByColumn"></param>
+        /// <param name="sortOrder"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<TEntity>> GetFromPageAsync(int page, int pageSize, string orderByColumn, string sortOrder = "asc")
         {
             // Simple validation
