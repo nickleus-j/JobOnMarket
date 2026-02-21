@@ -75,7 +75,7 @@ namespace JobsOnMarket.Controllers
         {
             try
             {
-                var customer = await UnitOfWork.CustomerRepository.GetCustomerByUserIdAsync(User.Identity.Name);
+                var customer = await UnitOfWork.CustomerRepository.GetCustomerByUserNameAsync(User.Identity.Name);
                 int jobId=await UnitOfWork.JobOfferRepository.AcceptJobOffer(offerId, customer.ID);
                 return Ok(await UnitOfWork.JobRepository.SingleAsync(j => j.ID == jobId));
             }

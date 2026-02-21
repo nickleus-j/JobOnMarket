@@ -155,6 +155,7 @@ namespace JobsOnMarket.Controllers
             try
             {
                 var result = await _userManager.CreateAsync(user, dto.UnhashedPassword);
+                await _dataUnitOfWork.CompleteAsync();
                 var role=await _userManager.AddToRoleAsync(user, dto.RoleName);
                 if (dto.RoleName.Equals("Customer", StringComparison.InvariantCultureIgnoreCase))
                 {

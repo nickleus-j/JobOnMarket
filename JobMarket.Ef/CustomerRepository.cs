@@ -17,7 +17,7 @@ namespace JobMarket.Ef
         {
             get { return Context as JobMarketContext; }
         }
-        public async Task<Customer> GetCustomerByUserIdAsync(string userName)
+        public async Task<Customer> GetCustomerByUserNameAsync(string userName)
         {
             var identityUser = await marketContext.Users.SingleAsync(u => u.UserName == userName); // Ensure user exists
             var customerUser = await marketContext.CustomerUser.SingleOrDefaultAsync(cu => cu.UserId == identityUser.Id);

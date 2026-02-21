@@ -132,5 +132,27 @@ namespace JobMarket.Ef.Tests
                 Assert.Single(result);
             }
         }
+        [Fact]
+        public async Task SearchUsername_PartialCaseInsensitive_ReturnsMatches()
+        {
+            DbContextOptions<JobMarketContext> dbContextOptions = new DbContextOptionsBuilder<JobMarketContext>()
+                .UseInMemoryDatabase(databaseName: "jobMark").Options;
+
+            using (var context = new JobMarketContext(dbContextOptions))
+            {
+                context.Database.EnsureCreated();
+                context.Customer.Add(new Customer { ID = 33, FirstName = "John", LastName = "Moe" });
+                context.Customer.Add(new Customer { ID = 34, FirstName = "Alex", LastName = "moe-sample" });
+                context.Customer.Add(new Customer { ID = 35, FirstName = "Empty", LastName = "Han" }); // should be ignored
+                await context.SaveChangesAsync();
+
+                var repo = new CustomerRepository(context);
+
+                // partial, case-insensitive search
+                var result = await repo.GetCustomerByUserNameAsync("customer@customer.com");
+                Assert.NotNull(result);
+                Assert.True(result.ID>0);
+            }
+        }
     }
 }
