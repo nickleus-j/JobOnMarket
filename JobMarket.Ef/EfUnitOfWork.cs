@@ -20,6 +20,7 @@ namespace JobMarket.Ef
         public IJobOfferRepository JobOfferRepository { get; private set; }
         public ICustomerUserRepository CustomerUserRepository { get; private set; }
         public IContractorUserRepository ContractorUserRepository { get; private set; }
+        public ICurrencyRepository CurrencyRepository { get; private set; }
 
         public EfUnitOfWork(JobMarketContext context)
         {
@@ -30,6 +31,7 @@ namespace JobMarket.Ef
             JobOfferRepository=new JobOfferRepository(_context);
             CustomerUserRepository = new CustomerUserRepository(_context);
             ContractorUserRepository = new ContractorUserRepository(_context);
+            CurrencyRepository = new CurrencyRepository(_context);
         }
         /// <summary>
         /// Save Changes

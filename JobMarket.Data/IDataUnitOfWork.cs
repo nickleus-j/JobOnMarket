@@ -14,5 +14,6 @@ namespace JobMarket.Data
         IJobOfferRepository JobOfferRepository { get; }
         ICustomerUserRepository CustomerUserRepository { get;  }
         IContractorUserRepository ContractorUserRepository { get; }
+        ICurrencyRepository CurrencyRepository { get; }
     }
 }

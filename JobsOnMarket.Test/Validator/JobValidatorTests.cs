@@ -4,6 +4,7 @@ using JobMarket.Data.Entity;
 using FluentValidation.Results;
 using System.Linq;
 using JetBrains.Annotations;
+using JobsOnMarket.Dto.Job;
 
 namespace JobsOnMarket.Validator.Tests
 {
@@ -15,9 +16,9 @@ namespace JobsOnMarket.Validator.Tests
         [Fact]
         public void StartDate_InPast_ShouldHaveValidationError()
         {
-            var job = new Job
+            var job = new JobDto
             {
-                BudgetCurrencyId = 1,
+                CurrencyCode = "USD",
                 StartDate = DateTime.Now.AddMinutes(-10),
                 DueDate = DateTime.Now.AddHours(1),
                 Description = "Valid description"
@@ -32,9 +33,9 @@ namespace JobsOnMarket.Validator.Tests
         [Fact]
         public void StartDate_InFuture_ShouldNotHaveValidationError()
         {
-            var job = new Job
+            var job = new JobDto
             {
-                BudgetCurrencyId = 1,
+                CurrencyCode = "USD",
                 StartDate = DateTime.Now.AddMinutes(1),
                 DueDate = DateTime.Now.AddHours(1),
                 Description = "Valid description"
@@ -47,9 +48,9 @@ namespace JobsOnMarket.Validator.Tests
         [Fact]
         public void StartDate_InFutureButLaterThanDueDate_ShouldHaveValidationError()
         {
-            var job = new Job
+            var job = new JobDto
             {
-                BudgetCurrencyId = 1,
+                CurrencyCode = "USD",
                 StartDate = DateTime.Now.AddHours(2),
                 DueDate = DateTime.Now.AddHours(1),
                 Description = "invalid description"
@@ -62,9 +63,9 @@ namespace JobsOnMarket.Validator.Tests
         [Fact]
         public void DueDate_InPast_ShouldHaveValidationError()
         {
-            var job = new Job
+            var job = new JobDto
             {
-                BudgetCurrencyId = 1,
+                CurrencyCode = "USD",
                 StartDate = DateTime.Now.AddHours(1),
                 DueDate = DateTime.Now.AddMinutes(-5),
                 Description = "Valid description"
@@ -79,9 +80,9 @@ namespace JobsOnMarket.Validator.Tests
         [Fact]
         public void DueDate_InFuture_ShouldNotHaveValidationError()
         {
-            var job = new Job
+            var job = new JobDto
             {
-                BudgetCurrencyId = 1,
+                CurrencyCode = "USD",
                 StartDate = DateTime.Now.AddMinutes(1),
                 DueDate = DateTime.Now.AddHours(2),
                 Description = "Valid description"
@@ -98,9 +99,9 @@ namespace JobsOnMarket.Validator.Tests
         [InlineData("   ")]
         public void Description_NullOrWhitespace_ShouldHaveValidationError(string? desc)
         {
-            var job = new Job
+            var job = new JobDto
             {
-                BudgetCurrencyId = 1,
+                CurrencyCode = "USD",
                 StartDate = DateTime.Now.AddMinutes(1),
                 DueDate = DateTime.Now.AddHours(1),
                 Description = desc
@@ -115,9 +116,9 @@ namespace JobsOnMarket.Validator.Tests
         [Fact]
         public void Description_WithContent_ShouldNotHaveValidationError()
         {
-            var job = new Job
+            var job = new JobDto
             {
-                BudgetCurrencyId = 1,
+                CurrencyCode = "USD",
                 StartDate = DateTime.Now.AddMinutes(1),
                 DueDate = DateTime.Now.AddHours(1),
                 Description = "Has content"
@@ -130,9 +131,9 @@ namespace JobsOnMarket.Validator.Tests
         [Fact]
         public void HasCurrency_ShouldNotHaveValidationError()
         {
-            var job = new Job
+            var job = new JobDto
             {
-                BudgetCurrencyId = 2,
+                CurrencyCode = "EUR",
                 StartDate = DateTime.Now.AddMinutes(1),
                 DueDate = DateTime.Now.AddHours(1),
                 Description = "A job"

@@ -2,6 +2,9 @@
 using FluentValidation;
 using JobMarket.Data;
 using JobMarket.Data.Entity;
+using JobMarket.Ef.Util;
+using JobsOnMarket.Dto.Job;
+using JobsOnMarket.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +17,11 @@ namespace JobsOnMarket.Controllers
     public class JobController : ControllerBase
     {
         private IDataUnitOfWork UnitOfWork;
-        private  IValidator<Job> _validator;
-        public JobController(IDataUnitOfWork unitOfWork, IValidator<Job> validator)
+        private  IValidator<JobDto> _dtoValidator;
+        public JobController(IDataUnitOfWork unitOfWork, IValidator<JobDto> validator)
         {
             this.UnitOfWork = unitOfWork;
-            this._validator = validator;
+            this._dtoValidator = validator;
         }
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
@@ -29,23 +32,24 @@ namespace JobsOnMarket.Controllers
             }
 
             var jobs = await UnitOfWork.JobRepository.GetFromPageAsync(page, pageSize, "ID");
-            return Ok(jobs);
+            var dtoList= JobMapper.MapToDtos(jobs,await UnitOfWork.CurrencyRepository.GetAllAsync());
+            return Ok(dtoList);
         }
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(int id)
         {
-            var job=await UnitOfWork.JobRepository.GetAsync(id);
-            return Ok(job);
+            var jobs=await UnitOfWork.JobRepository.GetAsync(id);
+            return Ok(jobs);
         }
         [Authorize(Roles = "Customer")]
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Job entity)
+        public async Task<ActionResult> Post([FromBody] JobDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState); // Returns 400 Bad Request with error details
             }
-            var validationResult = await _validator.ValidateAsync(entity);
+            var validationResult = await _dtoValidator.ValidateAsync(dto);
 
             if (!validationResult.IsValid)
             {
@@ -53,6 +57,8 @@ namespace JobsOnMarket.Controllers
             }
             try
             {
+                var entity= JobMapper.MapToJob(dto, new CurrencyLister().GetCurrencies());
+                entity.BudgetCurrency = null;
                 await UnitOfWork.JobRepository.AddAsync(entity);
                 await UnitOfWork.CompleteAsync();
             }
@@ -61,7 +67,7 @@ namespace JobsOnMarket.Controllers
                 return BadRequest(dbe.Message);
             }
 
-            return Ok(entity);
+            return Ok(dto);
         }
         [Authorize(Roles = "Customer")]
         [HttpPut]
@@ -71,12 +77,7 @@ namespace JobsOnMarket.Controllers
             {
                 return BadRequest(ModelState); // Returns 400 Bad Request with error details
             }
-            var validationResult = await _validator.ValidateAsync(entity);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.ToDictionary());
-            }
+            
             try
             {
                 UnitOfWork.JobRepository.Update(entity);

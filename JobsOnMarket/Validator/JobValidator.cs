@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using JobMarket.Data.Entity;
 using JobMarket.Ef.Util;
+using JobsOnMarket.Dto.Job;
+
 namespace JobsOnMarket.Validator
 {
-    public class JobValidator : AbstractValidator<Job>
+    public class JobValidator : AbstractValidator<JobDto>
     {
         public JobValidator()
         {
@@ -20,9 +22,9 @@ namespace JobsOnMarket.Validator
                 .Must(DueDateLaterThanStartDate)
                 .WithMessage("The event due date must be later than the current date.");
             RuleFor(x => x)
-                .Must(x=>x.BudgetCurrencyId.HasValue)
+                .Must(x=>!String.IsNullOrWhiteSpace(x.CurrencyCode))
                 .WithMessage("Currency Id must have value");
-            RuleFor(x => x.BudgetCurrencyId.Value)
+            RuleFor(x => x.CurrencyCode)
                 .Must(ValidCurrnecyId)
                 .WithMessage("Not  valid Currency ID");
         }
@@ -31,7 +33,7 @@ namespace JobsOnMarket.Validator
         {
             return date >= DateTime.Now;
         }
-        private bool DueDateLaterThanStartDate(Job job)
+        private bool DueDateLaterThanStartDate(JobDto job)
         {
             return job.DueDate >= job.StartDate;
         }
@@ -39,11 +41,11 @@ namespace JobsOnMarket.Validator
         {
             return !String.IsNullOrWhiteSpace(text);
         }
-        private bool ValidCurrnecyId(int currencyID)
+        private bool ValidCurrnecyId(string CurrencyCode)
         {
             CurrencyLister currencyLister = new CurrencyLister();
-            var currencies = currencyLister.GetCurrencies();
-            return currencies.Any(c => c.Id == currencyID);
+            var currencies = currencyLister.GetCurrencies().Select(x => x.Code.ToUpper()).ToList();
+            return currencies.Any(c => c == CurrencyCode.ToUpper());
         }
     }
 }
