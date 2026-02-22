@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobMarket.Ef.Tests;
 
-[TestSubject(typeof(JobMarketContext))]
-public class JobMarketContextTest
+[TestSubject(typeof(CurrencyRepository))]
+public class CurrencyRepo
 {
 private JobMarketContext GetInMemoryContext()
     {
