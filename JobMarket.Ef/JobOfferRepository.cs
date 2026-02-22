@@ -31,5 +31,11 @@ namespace JobMarket.Ef
             await marketContext.SaveChangesAsync();
             return jobId;
         }
+
+        public async Task<IEnumerable<JobOffer>> OffersForJob(int jobId, int page, int pageSize)
+        {
+            var offers = await FindAsync(o => o.JobId == jobId, page,pageSize);
+            return offers;
+        }
     }
 }

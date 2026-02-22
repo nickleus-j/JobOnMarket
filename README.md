@@ -38,8 +38,9 @@ The SA account follows a strong password policy. Otherwise, the setup will fail
 ## Setup For non Windows Machines
 - Download source file
 - connect to a sql server remotely or via containers
-- place configuration values for connection string and default password for seeded users.
+- place configuration values for connection string and default password of seeded users.
 - Run JobsOnMarket api via dotnet or Visual Studio code
+- Browse [http://localhost:5142/index.html](http://localhost:5142/index.html)
 
 ## Notes for Running the enpoints on Swagger
 - Need to Authenticte to Authorize.
@@ -51,8 +52,7 @@ The SA account follows a strong password policy. Otherwise, the setup will fail
 
 # Authorize in Swagger
 - try enpoint /api/Auth/login
-- Enter a username from the [AspNetUsers] table but also find the associated role (Customer or Contractor)
-- Enter the default password from the dockercompose file or the user secrets.
+- Use the registration Endpoint and put Customer or Contrctor as the role 
 - Copy the JWT token and paste it to the textbox that appears after clicking the authorize button on swagger.
 - Logout by clicking authorize button again.
 

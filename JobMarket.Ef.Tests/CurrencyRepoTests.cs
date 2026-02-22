@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace JobMarket.Ef.Tests;
 
 [TestSubject(typeof(CurrencyRepository))]
-public class CurrencyRepo
+public class CurrencyRepoTests
 {
 private JobMarketContext GetInMemoryContext()
     {
@@ -70,7 +70,7 @@ private JobMarketContext GetInMemoryContext()
             var repo = new CurrencyRepository(context);
 
             // Act
-            var currency = await repo.GetCurrencyByCode("EUR");
+            var currency = await repo.GetCurrencyByCode("eur");
 
             // Assert
             Assert.NotNull(currency);

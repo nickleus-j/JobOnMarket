@@ -36,6 +36,11 @@ namespace JobsOnMarket.Controllers
         {
             return Ok(await UnitOfWork.JobOfferRepository.OffersForJobsNotAcceptedYetAsync());
         }
+        [HttpGet("Job/{jobId}")]
+        public async Task<ActionResult> GetAvailableForJob(int jobId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            return Ok(await UnitOfWork.JobOfferRepository.OffersForJob(jobId,page,pageSize));
+        }
         [Authorize(Roles = "Contractor")]
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] JobOffer entity)

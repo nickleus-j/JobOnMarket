@@ -25,6 +25,7 @@ public class CurrencyRepository:Repository<Currency>,ICurrencyRepository
 
     public async Task<Currency> GetCurrencyByCode(string code)
     {
-        return await marketContext.Currency.FirstOrDefaultAsync(x => x.Code == code);
+        string captilalizedCode = code.ToUpper();
+        return await marketContext.Currency.FirstOrDefaultAsync(x => x.Code == captilalizedCode);
     }
 }

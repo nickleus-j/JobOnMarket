@@ -9,5 +9,6 @@ namespace JobMarket.Data
     {
         Task<IEnumerable<JobOffer>> OffersForJobsNotAcceptedYetAsync();
         Task<int> AcceptJobOffer(int offerId, int customerId);
+        Task<IEnumerable<JobOffer>> OffersForJob(int jobId,int page,int pageSize);
     }
 }
