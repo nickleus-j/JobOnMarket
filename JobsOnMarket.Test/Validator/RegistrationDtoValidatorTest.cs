@@ -39,7 +39,7 @@ public class RegistrationDtoValidatorTest
         Assert.False(result.IsValid);
     }
     [Fact]
-    public void NullRole_ShouldBeInvalid()
+    public void EmptyRole_ShouldBeInvalid()
     {
         var registration = new RegistrationDto
         {

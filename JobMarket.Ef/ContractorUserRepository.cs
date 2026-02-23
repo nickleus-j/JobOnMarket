@@ -24,7 +24,7 @@ namespace JobMarket.Ef
 
         public async Task<ContractorUser> GetContractorUserByUserIdAsync(string userId)
         {
-            ContractorUser contractorUser = await SingleAsync(c=>c.UserId == userId);
+            ContractorUser contractorUser = await marketContext.ContractorUser.AsNoTracking().FirstOrDefaultAsync(c => c.UserId == userId);
             return contractorUser;
         }
 
