@@ -1,4 +1,5 @@
 using JobMarket.Data;
+using JobMarket.Data.Entity;
 using JobsOnMarket.Dto;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,13 +16,13 @@ public class CurrencyController : Controller
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var currencies = await UnitOfWork.CurrencyRepository.GetAllAsync();
-        return Ok(currencies.Select(x=>new CurrencyDto(){Code= x.Code,Name= x.Name }));
+        IEnumerable<Currency> currencies = await UnitOfWork.CurrencyRepository.GetAllAsync();
+        return Ok(currencies.Select(c=>new CurrencyDto(){Code= c.Code,Name= c.Name }));
     }
     [HttpGet("{code}")]
     public async Task<IActionResult> Get(string code)
     {
-        var c = await UnitOfWork.CurrencyRepository.GetCurrencyByCode(code);
+        Currency c = await UnitOfWork.CurrencyRepository.GetCurrencyByCode(code);
         return Ok(new CurrencyDto(){Code= c.Code,Name= c.Name });
     }
 }

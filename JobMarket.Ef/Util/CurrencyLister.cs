@@ -8,7 +8,7 @@ namespace JobMarket.Ef.Util
     public class CurrencyLister
     {
         /// <summary>
-        /// Constains a collection of supported Currencies. It Has ID for the sake of Seeding a Database
+        /// Contains a collection of supported Currencies. It Has ID for the sake of Seeding a Database
         /// </summary>
         /// <returns></returns>
         public ICollection<Currency> GetCurrencies()
