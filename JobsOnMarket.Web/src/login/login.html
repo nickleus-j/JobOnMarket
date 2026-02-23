@@ -1,0 +1,19 @@
+<!-- login.html -->
+<div class="login-box">
+  <h2>Login</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label>Username</label>
+      <input type="text" formControlName="userName">
+    </div>
+    
+    <div class="field">
+      <label>Password</label>
+      <input type="password" formControlName="unhashedPassword">
+    </div>
+
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+    <button type="submit" [disabled]="loginForm.invalid">Sign In</button>
+  </form>
+</div>

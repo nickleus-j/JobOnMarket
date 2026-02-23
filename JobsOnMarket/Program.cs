@@ -1,12 +1,13 @@
+using FluentValidation;
 using JobMarket.Data;
 using JobMarket.Ef;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
-using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -45,6 +46,18 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true
     };
 });
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200").AllowAnyHeader()
+                                                  .AllowAnyMethod(); ;
+        });
+});
+
 // Add FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
@@ -94,15 +107,13 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-app.UseSwagger(options =>
-{
-
-});
+app.UseSwagger(options =>{});
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Jobs On Market API");
     options.RoutePrefix = string.Empty; // Swagger at root URL
 });
+app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
