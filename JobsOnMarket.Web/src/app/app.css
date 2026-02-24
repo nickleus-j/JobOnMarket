@@ -62,15 +62,28 @@
     position: relative;
   }
 
-  .angular-logo {
-    max-width: 9.2rem;
-  }
-
+nav{
+  background: #41c553;
+  padding: 5px 16px;
+  margin: -10px -10px -1px -10px;
+  font-size: 16px;
+  box-shadow: #cacac9 3px 10px 15px;
+}
+nav a{
+  color: #777;
+  text-decoration: none;
+  margin-right: 12px;
+}
+nav a:hover{
+  background: #21a533;
+}
+nav a:visited{
+  color: #3a223a;
+}
   .content {
     display: flex;
     justify-content: space-around;
     width: 100%;
-    max-width: 700px;
     margin-bottom: 3rem;
   }
 

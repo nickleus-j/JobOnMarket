@@ -3,9 +3,15 @@
 @for (item of data; track item.id) {
         <div class="job-card">
             <span>{{item.currencyCode}} <b>{{item.budget}}</b></span>
+            
             <p>
                 {{item.description}}
             </p>
+            <div>
+                <small> start date {{item.startDate | date: 'short' }}</small><br>
+                <small> due date{{item.dueDate | date: 'short' }}</small>
+            </div>
+            
             <a class="btn">View Details</a>
         </div>
     }
