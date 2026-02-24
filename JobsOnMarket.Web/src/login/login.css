@@ -1,0 +1,17 @@
+.login-box{
+  box-shadow: #555 3px 6px 5px;
+  margin: 5px;
+}
+.login-box legend{
+    font-size: x-large;
+}
+.login-box form{
+    padding: 8px;
+}
+.login-box input{
+    font-size: 16px;
+}
+.login-box button{
+    font-size: 14px;
+    padding: 5px;
+}

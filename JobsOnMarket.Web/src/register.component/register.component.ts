@@ -9,7 +9,7 @@ import { AuthService } from '../Service/auth.service';
   standalone: true, // Use standalone for modern Angular
   imports: [ReactiveFormsModule, CommonModule, RouterModule], 
   templateUrl: './register.component.html',
-  //styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;

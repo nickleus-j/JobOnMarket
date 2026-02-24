@@ -1,1 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
+.hidden{
+    display: none;
+}
+nav a{
+    margin-right:5px;
+}
+.error{
+    font-weight: bold;
+    color:#ca2222
+}
+.field label,.field .error{
+  margin: 0 7px;
+}
+.btn{
+    background: #9193ee;
+  padding: 5px 10px;
+  border: 1px solid #61618b;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: none;
+}

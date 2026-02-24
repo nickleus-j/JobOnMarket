@@ -1,0 +1,9 @@
+.job-card{
+    border: 1px solid #aaa;
+    padding: 9px;
+    background: #efeeec;
+    display: inline-block;
+    width: 25%;
+    margin: 3px 8px;
+    border-radius: 10px;
+}

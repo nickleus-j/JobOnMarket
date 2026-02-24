@@ -1,0 +1,12 @@
+<h1>Available Jobs</h1>
+<div class="feed"  *ngIf="dataFetch$ | async as data">
+@for (item of data; track item.id) {
+        <div class="job-card">
+            <span>{{item.currencyCode}} <b>{{item.budget}}</b></span>
+            <p>
+                {{item.description}}
+            </p>
+            <a class="btn">View Details</a>
+        </div>
+    }
+</div>

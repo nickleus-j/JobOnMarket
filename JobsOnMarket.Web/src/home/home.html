@@ -1,0 +1,5 @@
+<!-- If NOT authenticated -->
+  <ng-container *ngIf="!(authService.authStatus$ | async);">
+    <app-login></app-login>
+    <app-register></app-register>
+  </ng-container>

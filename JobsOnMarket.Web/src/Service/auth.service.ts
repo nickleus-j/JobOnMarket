@@ -37,6 +37,7 @@ export class AuthService {
       tap(res => {
         if (res.token) {
           localStorage.setItem(this.AuthTokenName, res.token); // Store JWT
+          this.authStatus.next(true); // Update auth status
         }
       })
     );
@@ -47,7 +48,7 @@ export class AuthService {
   }
   // Call this in your login/register 'next' block
   setLoggedIn(token: string) {
-    localStorage.setItem('auth_token', token);
+    localStorage.setItem(this.AuthTokenName, token);
     this.authStatus.next(true);
   }
 }
