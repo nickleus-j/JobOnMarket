@@ -1,0 +1,7 @@
+<select  *ngIf="dataFetch$ | async as data">
+  @for (item of data; track item.code) {
+        <option [value]="item.code">
+            {{item.code+" - "+item.name}}
+        </option>
+    }
+</select>
