@@ -36,5 +36,11 @@ namespace JobsOnMarket.Controllers
             var customers = await UnitOfWork.ContractorRepository.SearchContractor(q,page,pageSize);
             return Ok(customers);
         }
+        [HttpPut("{id}/{rating}")]
+        public async Task<IActionResult> RateContractor(int id,int rating)
+        {
+            await UnitOfWork.ContractorRepository.RateContractorAndSaveAverage(id, rating);
+            return Ok(await UnitOfWork.ContractorRepository.GetAsync(id));
+        }
     }
 }

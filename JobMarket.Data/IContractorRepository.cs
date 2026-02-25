@@ -10,5 +10,6 @@ namespace JobMarket.Data
         Task<IList<Contractor>> SearchContractor(string searchTerm);
         Task<IList<Contractor>> SearchContractor(string searchTerm, int page, int pageSize = 10);
         Task<Contractor> GetContractorByUserIdAsync(string userName);
+        Task RateContractorAndSaveAverage(int contractorId, int rating);
     }
 }

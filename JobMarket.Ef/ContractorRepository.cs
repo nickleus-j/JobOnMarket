@@ -44,5 +44,18 @@ namespace JobMarket.Ef
             throw new InvalidOperationException($"No contractor found for user ID: {userName}");
         }
 
+        public async Task RateContractorAndSaveAverage(int contractorId, int rating)
+        {
+            Contractor contractor = await GetAsync(contractorId);
+            if (contractor.Rating == 0)
+            {
+                contractor.Rating = rating;
+            }
+            else
+            {
+                contractor.Rating=(rating+contractor.Rating)/2;
+            }
+            await marketContext.SaveChangesAsync();
+        }
     }
 }
