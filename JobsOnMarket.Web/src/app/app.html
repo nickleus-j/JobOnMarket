@@ -4,10 +4,11 @@
     <a routerLink="/login">LogIn</a>
     <a routerLink="/register">Register</a>
   </ng-container>
-
+  <a routerLink="/contractors">Contractor</a> 
   <!-- If authenticated -->
   <ng-template #loggedInTemplate>
     <a routerLink="/jobs">Job</a>
+    
     <button (click)="onLogout()">Log Out</button>
   </ng-template>
 </nav>

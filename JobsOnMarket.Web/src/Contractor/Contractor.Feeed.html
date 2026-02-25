@@ -1,0 +1,10 @@
+<h1>Contractors to Choose</h1>
+<div class="feed"  *ngIf="dataFetch$ | async as data">
+@for (item of data; track item.id) {
+        <div class="contractor-card">
+            <h3>{{item.name}}</h3>
+            <small>Rating: {{item.rating}}/5</small><br>
+            <a class="btn" routerLink="/contractor/{{item.id}}">View Details</a>
+        </div>
+    }
+</div>
