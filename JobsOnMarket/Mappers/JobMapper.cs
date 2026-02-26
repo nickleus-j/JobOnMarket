@@ -1,4 +1,5 @@
 using JobMarket.Data.Entity;
+using JobsOnMarket.Dto;
 using JobsOnMarket.Dto.Job;
 
 namespace JobsOnMarket.Mappers;
@@ -68,5 +69,23 @@ public class JobMapper
         if (jobs == null) throw new ArgumentNullException(nameof(jobs));
 
         return jobs.Select(job => JobMapper.MapToDto(job, currencies));
+    }
+    public static JobWithCurrencyDto MapToDtoWithCurrency(Job job, IEnumerable<Currency> currencies)
+    {
+        if (job == null) throw new ArgumentNullException(nameof(job));
+
+        // Resolve currency ID back to code
+        Currency? currency = currencies
+            .FirstOrDefault(c => c.Id == job.BudgetCurrencyId);
+
+        return new JobWithCurrencyDto
+        {
+            ID = job.ID,
+            StartDate = job.StartDate,
+            DueDate = job.DueDate,
+            Budget = job.Budget,
+            Currency = new CurrencyDto{Code = currency.Code,Name = currency.Name},
+            Description = job.Description
+        };
     }
 }

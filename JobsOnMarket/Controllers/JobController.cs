@@ -40,7 +40,7 @@ namespace JobsOnMarket.Controllers
         public async Task<ActionResult> Get(int id)
         {
             var job=await UnitOfWork.JobRepository.GetAsync(id);
-            var dto= JobMapper.MapToDto(job,await UnitOfWork.CurrencyRepository.FindAsync(c=>c.Id==job.BudgetCurrencyId));
+            var dto= JobMapper.MapToDtoWithCurrency(job,await UnitOfWork.CurrencyRepository.FindAsync(c=>c.Id==job.BudgetCurrencyId));
             UnitOfWork.Dispose();
             return Ok(dto);
         }
@@ -69,7 +69,6 @@ namespace JobsOnMarket.Controllers
             {
                 return BadRequest(dbe.Message);
             }
-
             return Ok(dto);
         }
         [Authorize(Roles = "Customer")]
