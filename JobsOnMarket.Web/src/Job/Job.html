@@ -1,0 +1,11 @@
+<div class="job-card" *ngIf="dataFetch$ | async as data">
+            <h1>{{data.currency.code}} {{data.budget}}</h1>
+            
+            <p>
+                {{data.description}}
+            </p>
+            <div>
+                <small> start date {{data.startDate | date: 'short' }}</small><br>
+                <small> due date{{data.dueDate | date: 'short' }}</small>
+            </div>
+</div>
