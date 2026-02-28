@@ -1,11 +1,15 @@
-<div class="job-card" *ngIf="dataFetch$ | async as data">
-            <h1>{{data.currency.code}} {{data.budget}}</h1>
-            
-            <p>
-                {{data.description}}
-            </p>
-            <div>
-                <small> start date {{data.startDate | date: 'short' }}</small><br>
-                <small> due date{{data.dueDate | date: 'short' }}</small>
-            </div>
+@if (dataFetch$ | async; as data) {
+<div class="job-card">
+    <h3>{{data.description}} </h3>
+    
+    <p>
+        {{data.currency.code}} {{data.budget}}
+    </p>
+    <div>
+        <b>start date</b><small>  {{data.startDate | date: 'short' }}</small><br>
+        <b>due date</b><small> {{data.dueDate | date: 'short' }}</small><br/>
+        <a class="btn" href="/jobs">Back</a>
+    </div>
+    
 </div>
+}

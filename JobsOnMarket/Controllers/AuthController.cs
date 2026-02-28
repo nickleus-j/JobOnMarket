@@ -17,7 +17,7 @@ namespace JobsOnMarket.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
-        private IDataUnitOfWork _dataUnitOfWork;
+        private readonly IDataUnitOfWork _dataUnitOfWork;
         public AuthController(UserManager<IdentityUser> userManager, IConfiguration configuration,IDataUnitOfWork  dataUnitOfWork)
         {
             this._userManager = userManager;

@@ -1,5 +1,6 @@
 <h1>Contractors to Choose</h1>
-<div class="feed"  *ngIf="dataFetch$ | async as data">
+@if (dataFetch$ | async; as data) {
+<div class="feed"  >
 @for (item of data; track item.id) {
         <div class="contractor-card">
             <h3>{{item.name}}</h3>
@@ -8,3 +9,4 @@
         </div>
     }
 </div>
+}

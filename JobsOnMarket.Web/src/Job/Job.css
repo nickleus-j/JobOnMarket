@@ -1,3 +1,7 @@
-job-detail{
-    width:100%;
+.job-card{
+  border: 3px solid #3a3b3a;
+  padding: 0 15px 6px 15px;
+}
+.job-card a.btn{
+    background-color: darkolivegreen;
 }

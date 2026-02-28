@@ -6,7 +6,8 @@ import { RegisterComponent } from '../register.component/register.component';
 @Component({
   selector: 'home',
   imports: [CommonModule,LogIn,RegisterComponent],
-  templateUrl: './home.html'
+  templateUrl: './home.html',
+  styleUrl:'./home.css'
 })
 export class Home {
   constructor(public authService: AuthService) {}
