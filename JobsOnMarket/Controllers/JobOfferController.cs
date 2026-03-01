@@ -14,11 +14,9 @@ namespace JobsOnMarket.Controllers
     public class JobOfferController : ControllerBase
     {
         private IDataUnitOfWork UnitOfWork;
-        private readonly UserManager<IdentityUser> _userManager;
-        public JobOfferController(IDataUnitOfWork unitOfWork, UserManager<IdentityUser> userManager)
+        public JobOfferController(IDataUnitOfWork unitOfWork)
         {
             this.UnitOfWork = unitOfWork;
-            _userManager = userManager;
         }
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
@@ -29,12 +27,14 @@ namespace JobsOnMarket.Controllers
             }
 
             var offers = await UnitOfWork.JobOfferRepository.GetFromPageAsync(page, pageSize, "ID");
-            return Ok(offers);
+            return Ok(JobMapper.MapToDtos(offers,await UnitOfWork.CurrencyRepository.GetAllAsync()));
         }
         [HttpGet("Available")]
         public async Task<ActionResult> GetAvailable()
         {
-            return Ok(await UnitOfWork.JobOfferRepository.OffersForJobsNotAcceptedYetAsync());
+            var offers = await UnitOfWork.JobOfferRepository.OffersForJobsNotAcceptedYetAsync();
+            return Ok(JobMapper.MapToDtos(offers,await UnitOfWork.CurrencyRepository.GetAllAsync()));
+            
         }
         [HttpGet("Job/{jobId}")]
         public async Task<ActionResult> GetAvailableForJob(int jobId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)

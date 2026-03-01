@@ -88,4 +88,56 @@ public class JobMapper
             Description = job.Description
         };
     }
+    public static JobOfferDto MapToDto(JobOffer offer, IEnumerable<Currency> currencies)
+    {
+        if (offer == null) throw new ArgumentNullException(nameof(offer));
+
+        // Resolve currency ID back to code
+        string? currencyCode = currencies
+            .FirstOrDefault(c => c.Id == offer.PriceCurrencyId)
+            ?.Code;
+
+        return new JobOfferDto
+        {
+            ID = offer.ID,
+            CurrencyCode = currencyCode ?? string.Empty,
+            JobId = offer.JobId,
+            Price = offer.Price,
+        };
+    }
+    public static JobOffer MapToJobOffer(JobOfferDto dto, IEnumerable<Currency> currencies)
+    {
+        if (dto == null) throw new ArgumentNullException(nameof(dto));
+
+        // Try to resolve currency code to ID
+        var currency = currencies
+            .FirstOrDefault(c => string.Equals(c.Code, dto.CurrencyCode, StringComparison.OrdinalIgnoreCase));
+        int? currencyId = currency?.Id;
+
+        return new JobOffer
+        {
+            ID = dto.ID,
+            PriceCurrency = currency,
+            JobId = dto.JobId,
+            Price = dto.Price,
+            PriceCurrencyId = currencyId,
+            OfferedByContractorId =  null,
+        };
+    }
+    public static IEnumerable<JobOfferDto> MapToDtos(
+        IEnumerable<JobOffer> offers,
+        IEnumerable<Currency> currencies)
+    {
+        if (offers == null) throw new ArgumentNullException(nameof(offers));
+
+        return offers.Select(job => JobMapper.MapToDto(job, currencies));
+    }
+    public static IEnumerable<JobOffer> MapToJoboffers(
+        IEnumerable<JobOfferDto> dtos,
+        IEnumerable<Currency> currencies)
+    {
+        if (dtos == null) throw new ArgumentNullException(nameof(dtos));
+
+        return dtos.Select(dto => JobMapper.MapToJobOffer(dto, currencies));
+    }
 }
