@@ -28,6 +28,7 @@ namespace JobMarket.Ef
         public virtual DbSet<CustomerUser> CustomerUser { get; set; }
         public virtual DbSet<ContractorUser> ContractorUser { get; set; }
         public virtual DbSet<Currency> Currency { get; set; }
+        public virtual DbSet<JobDoneReport> JobDoneReport { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

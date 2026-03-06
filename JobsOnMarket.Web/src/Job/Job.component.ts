@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { JobFeedService } from '../Service/Job.Feed.service';
 import { JobDetailDto } from './JobDetailDto';
 import { ActivatedRoute } from '@angular/router'; 
-import { ContractorFeedService } from '../Service/Contractor.Feed.service';
 import { Observable } from 'rxjs';
 @Component({
   selector: 'job-detail',

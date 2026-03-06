@@ -1,0 +1,25 @@
+using JobMarket.Data;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JobsOnMarket.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class JobDoneReportController : Controller
+{
+    private IDataUnitOfWork UnitOfWork;
+    public JobDoneReportController(IDataUnitOfWork unitOfWork)
+    {
+        this.UnitOfWork = unitOfWork;
+    }
+    [HttpGet("{contractorName}")]
+    public async Task<IActionResult> Get(string contractorName,[FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    {
+        if (page < 1 || pageSize < 1)
+        {
+            return BadRequest("Page and pageSize must be greater than 0.");
+        }
+        var jobreports=await UnitOfWork.JobDoneReportRepository.GetJobDoneReportsOfContractorAsync(contractorName);
+        return Ok(jobreports);
+    }
+}
