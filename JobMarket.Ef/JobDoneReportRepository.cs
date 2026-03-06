@@ -28,10 +28,14 @@ public class JobDoneReportRepository: Repository<JobDoneReport>, IJobDoneReportR
 
     public async Task<JobDoneReport> GetJobDoneReportAsync(int jobId)
     {
-        var job=await marketContext.JobOffer.FirstAsync(j=>j.JobId == jobId);
+        var job=await marketContext.JobOffer.FirstOrDefaultAsync(j=>j.JobId == jobId);
+        if (job == null)
+        {
+            return null;
+        }
         return await marketContext.JobDoneReport.Include(r=>r.OfferCompleted)
             .Include(r=>r.OfferCompleted.OfferedJob)
-            .SingleAsync(r => r.JobOfferId == job.ID);
+            .FirstOrDefaultAsync(r => r.JobOfferId == job.ID);
     }
 
     public async Task<IEnumerable<JobDoneReport>> GetJobDoneReportsOfContractorAsync(int contractorId)
@@ -44,6 +48,8 @@ public class JobDoneReportRepository: Repository<JobDoneReport>, IJobDoneReportR
     {
         return await marketContext.JobDoneReport.Include(r=>r.OfferCompleted)
             .Include(r=>r.OfferCompleted.OfferedByContractor)
+            .Include(r=>r.OfferCompleted.OfferedJob.AcceptedBy)
+            .Include(r=>r.OfferCompleted.OfferedJob.BudgetCurrency)
             .Where(r=>r.OfferCompleted!=null &&r.OfferCompleted.OfferedByContractor.Name.ToLower()==contractorName.ToLower())
             .ToListAsync();
     }

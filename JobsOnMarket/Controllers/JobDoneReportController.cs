@@ -1,4 +1,5 @@
 using JobMarket.Data;
+using JobsOnMarket.Mappers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobsOnMarket.Controllers;
@@ -20,6 +21,20 @@ public class JobDoneReportController : Controller
             return BadRequest("Page and pageSize must be greater than 0.");
         }
         var jobreports=await UnitOfWork.JobDoneReportRepository.GetJobDoneReportsOfContractorAsync(contractorName);
-        return Ok(jobreports);
+        return Ok(JobMapper.MapToJobDoneDtos(jobreports));
+    }
+    [HttpGet("Job/{jobId}")]
+    public async Task<IActionResult> Get(int jobId)
+    {
+        if (jobId < 1 )
+        {
+            return BadRequest("Page and pageSize must be greater than 0.");
+        }
+        var jobreport=await UnitOfWork.JobDoneReportRepository.GetJobDoneReportAsync(jobId);
+        if (jobreport == null)
+        {
+            return NotFound();
+        }
+        return Ok(JobMapper.MapToJobDoneDto(jobreport));
     }
 }

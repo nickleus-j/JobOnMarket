@@ -1,3 +1,4 @@
+using System.Text;
 using JobMarket.Data.Entity;
 using JobsOnMarket.Dto;
 using JobsOnMarket.Dto.Job;
@@ -139,5 +140,41 @@ public class JobMapper
         if (dtos == null) throw new ArgumentNullException(nameof(dtos));
 
         return dtos.Select(dto => JobMapper.MapToJobOffer(dto, currencies));
+    }
+    public static JobDoneDto MapToJobDoneDto(JobDoneReport entity)
+    {
+        if (entity == null)
+            throw new ArgumentNullException(nameof(entity));
+        var customer = entity.OfferCompleted?.OfferedJob?.AcceptedBy;
+        StringBuilder sb=new StringBuilder();
+        if (customer != null)
+        {
+            sb.Append(customer.FirstName);
+            sb.Append(" ");
+            sb.Append(customer.LastName);
+        }
+        else
+        {
+            sb.Append(String.Empty);
+        }
+        return new JobDoneDto
+        {
+            ID = entity.ID,
+            Rating = entity.Rating,
+            Description = entity.Description,
+            DateReported = entity.DateReported,
+            price = entity.OfferCompleted?.Price ?? 0,
+            CurrencyCode = entity.OfferCompleted?.PriceCurrency?.Code ?? string.Empty,
+            JobId = entity.OfferCompleted?.JobId ?? 0,
+            CustomerName = sb.ToString(),
+            ContractorName = entity.OfferCompleted?.OfferedByContractor?.Name ?? string.Empty
+        };
+    }
+    public static IEnumerable<JobDoneDto> MapToJobDoneDtos(IEnumerable<JobDoneReport> entities)
+    {
+        if (entities == null)
+            throw new ArgumentNullException(nameof(entities));
+
+        return entities.Select(entity => MapToJobDoneDto(entity));
     }
 }
