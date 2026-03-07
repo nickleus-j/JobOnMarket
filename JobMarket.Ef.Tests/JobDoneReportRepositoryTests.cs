@@ -118,7 +118,7 @@ public class JobDoneReportRepositoryTests
     {
         // Arrange
         var options = CreateNewContextOptions();
-        using var context = new JobMarketContext(options);
+        using (var context = new JobMarketContext(options)){
         
         string contractorName = "AliceSmith";
         var contractor = new Contractor { Name = contractorName };
@@ -143,5 +143,6 @@ public class JobDoneReportRepositoryTests
         // Assert
         Assert.NotEmpty(result);
         Assert.Equal(contractorName, result.First().OfferCompleted.OfferedByContractor.Name);
+        }
     }
 }

@@ -1,0 +1,132 @@
+<form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="job-form">
+   
+  <!-- Error Alert -->
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    <strong>Error:</strong> {{ errorMessage }}
+  </div>
+
+  <!-- ID Field (Read-only) -->
+  <div class="form-group" *ngIf="job?.id">
+    <label for="id">Job ID</label>
+    <input 
+      type="text" 
+      id="id" 
+      formControlName="id" 
+      class="form-control" 
+      readonly>
+  </div>
+
+  <!-- Start Date -->
+  <div class="form-group">
+    <label for="startDate">
+      Start Date <span class="required">*</span>
+    </label>
+    <input 
+      type="date" 
+      id="startDate" 
+      formControlName="startDate" 
+      class="form-control"
+      [class.is-invalid]="isFieldInvalid('startDate')">
+    <div class="invalid-feedback" *ngIf="isFieldInvalid('startDate')">
+      {{ getFieldErrorMessage('startDate') }}
+    </div>
+  </div>
+
+  <!-- Due Date -->
+  <div class="form-group">
+    <label for="dueDate">
+      Due Date <span class="required">*</span>
+    </label>
+    <input 
+      type="date" 
+      id="dueDate" 
+      formControlName="dueDate" 
+      class="form-control"
+      [class.is-invalid]="isFieldInvalid('dueDate')">
+    <div class="invalid-feedback" *ngIf="isFieldInvalid('dueDate')">
+      {{ getFieldErrorMessage('dueDate') }}
+    </div>
+  </div>
+
+  <!-- Budget -->
+  <div class="form-group">
+    <label for="budget">
+      Budget <span class="required">*</span>
+    </label>
+    <input 
+      type="number" 
+      id="budget" 
+      formControlName="budget" 
+      class="form-control"
+      step="0.01"
+      min="0"
+      [class.is-invalid]="isFieldInvalid('budget')">
+    <div class="invalid-feedback" *ngIf="isFieldInvalid('budget')">
+      {{ getFieldErrorMessage('budget') }}
+    </div>
+  </div>
+
+  <!-- Currency Code -->
+  <div class="form-group">
+    <label for="currencyCode">
+      Currency <span class="required">*</span>
+    </label>
+    <select 
+      id="currencyCode" 
+      formControlName="currencyCode" 
+      class="form-control"
+      [class.is-invalid]="isFieldInvalid('currencyCode')">
+      <option value="">-- Select Currency --</option>
+      <option *ngFor="let currency of currencies$ | async" [value]="currency.code">
+        {{ currency.code }} - {{ currency.name }}
+      </option>
+    </select>
+    <div class="invalid-feedback" *ngIf="isFieldInvalid('currencyCode')">
+      {{ getFieldErrorMessage('currencyCode') }}
+    </div>
+  </div>
+
+  <!-- Description -->
+  <div class="form-group">
+    <label for="description">
+      Description <span class="required">*</span>
+      <span class="char-count" [class.invalid]="getControl('description')?.value?.length < 10 && getControl('description')?.touched">
+        ({{ getControl('description')?.value?.length || 0 }}/10 min)
+      </span>
+    </label>
+    <textarea 
+      id="description" 
+      formControlName="description" 
+      class="form-control"
+      rows="4"
+      placeholder="Enter at least 10 characters"
+      [class.is-invalid]="isFieldInvalid('description')"></textarea>
+    <div class="invalid-feedback" *ngIf="isFieldInvalid('description')">
+      {{ getFieldErrorMessage('description') }}
+    </div>
+  </div>
+
+  <!-- Form Actions -->
+  <div class="form-actions">
+    <button 
+      type="submit" 
+      class="btn btn-primary"
+      [disabled]="jobForm.invalid || isSubmitting">
+      <span *ngIf="!isSubmitting">
+        {{ job?.id ? 'Update Job' : 'Create Job' }}
+      </span>
+      <span *ngIf="isSubmitting">
+        Saving...
+      </span>
+    </button>
+    <button 
+      type="button" 
+      class="btn btn-secondary"
+      (click)="onCancel()"
+      [disabled]="isSubmitting">
+      Cancel
+    </button>
+  </div>
+
+  
+</form>

@@ -6,6 +6,7 @@ import { Home } from '../home/home';
 import { JobFeed } from '../JobFeed/Job.Feed';
 import { ContractorFeed } from '../Contractor/Contractor.Feed';
 import { JobDetail } from '../Job/Job.component';
+import { JobFormComponent } from '../Job/Job.Form';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -14,5 +15,6 @@ export const routes: Routes = [
     { path: 'dashboard', component: CurrencyComponent },
     {path:'jobs',component:JobFeed},
     {path:'job/:id',component:JobDetail},
+    {path:'jobform',component:JobFormComponent},
     {path:'contractors',component:ContractorFeed}
   ];
