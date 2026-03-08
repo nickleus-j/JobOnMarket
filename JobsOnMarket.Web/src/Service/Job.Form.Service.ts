@@ -32,9 +32,10 @@ export class JobFormService {
    * @returns Observable of the updated JobDto
    */
   update(job: JobDto): Observable<JobDto> {
+    var token = localStorage.getItem(environment.Authentication_token_Name);
     return this.httpClient.put<JobDto>(
       `${this.API_URL}/Job/${job.id}`,
-      job
+      job,{headers: {'Content-Type': 'application/json',Authorization: `Bearer ${token}`}}
     );
   }
 

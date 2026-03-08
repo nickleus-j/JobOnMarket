@@ -1,11 +1,10 @@
-:root {
-  --primary-color: #007bff;
-  --error-color: #dc3545;
-}
+
 .job-form {
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
+  --primary-color: #007bff;
+  --error-color: #dc3545;
 }
 
 .job-form .form-group {

@@ -1,12 +1,15 @@
 import { Component, OnInit, Input, Output, EventEmitter,NgModule } from '@angular/core';
 import { FormBuilder, FormGroup, Validators ,ReactiveFormsModule} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router,ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CurrencyService } from '../Service/Currency.service';
 import { CurrencyDto } from '../Currency/CurrencyDto';
 import { JobDto } from './JobDto';
 import { JobFormService } from '../Service/Job.Form.Service';
+import { JobDetailDto } from './JobDetailDto';
+import { JobFeedService } from '../Service/Job.Feed.service';
+
 @Component({
   selector: 'job-form',
   imports: [CommonModule,ReactiveFormsModule],
@@ -21,40 +24,69 @@ export class JobFormComponent implements OnInit {
   jobForm!: FormGroup;
   currencies!: CurrencyDto[];
   currencies$!: Observable<CurrencyDto[]>;
+  dataFetch$!: Observable<JobDetailDto>;
   isSubmitting = false;
   errorMessage: string | null = null;
 
   constructor(
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private currencyService: CurrencyService,
     private jobService: JobFormService,
+    private service: JobFeedService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.initializeForm();
-    this.loadCurrencies();
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+        this.dataFetch$ = this.service.getJob(+id);
+        this.dataFetch$.subscribe({
+            next: (data) => {
+                this.job = {
+                    id: data.id,
+                    startDate: data.startDate,
+                    dueDate: data.dueDate,
+                    budget: data.budget,
+                    currencyCode: data.currency.code,
+                    description: data.description
+            };
+            this.initializeForm();
+            this.loadCurrencies();
+          },
+            error: (err) => console.error('Failed to load job details', err)
+        });
+      }
+      else{
+        this.initializeForm();
+        this.loadCurrencies();
+      }
+    
   }
 
   private initializeForm(): void {
-    this.jobForm = this.formBuilder.group({
-      id: [{ value: '', disabled: true }],
-      startDate: [null, [Validators.required]],
-      dueDate: [null, [Validators.required]],
-      budget: ['', [Validators.required, Validators.min(0)]],
-      currencyCode: ['', [Validators.required]],
-      description: ['', [Validators.required, Validators.minLength(10)]]
-    });
+    
+    
 
     // Populate form if editing existing job
     if (this.job) {
-      this.jobForm.patchValue({
+      this.jobForm = this.formBuilder.group({
         id: this.job.id,
-        startDate: this.job.startDate,
-        dueDate: this.job.dueDate,
+        startDate: this.formatDateForInput(this.job.startDate),
+        dueDate: this.formatDateForInput(this.job.dueDate),
         budget: this.job.budget,
         currencyCode: this.job.currencyCode,
         description: this.job.description
+      });
+    }
+    else{
+      this.jobForm = this.formBuilder.group({
+        id: [{ value: '', disabled: true }],
+        startDate: [null, [Validators.required]],
+        dueDate: [null, [Validators.required]],
+        budget: ['', [Validators.required, Validators.min(0)]],
+        currencyCode: ['', [Validators.required]],
+        description: ['', [Validators.required, Validators.minLength(10)]]
       });
     }
   }

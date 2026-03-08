@@ -34,12 +34,12 @@ namespace JobsOnMarket.Controllers
         {
             var offers = await UnitOfWork.JobOfferRepository.OffersForJobsNotAcceptedYetAsync();
             return Ok(JobMapper.MapToDtos(offers,await UnitOfWork.CurrencyRepository.GetAllAsync()));
-            
         }
         [HttpGet("Job/{jobId}")]
         public async Task<ActionResult> GetAvailableForJob(int jobId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            return Ok(await UnitOfWork.JobOfferRepository.OffersForJob(jobId,page,pageSize));
+            IEnumerable<JobOffer> offers = await UnitOfWork.JobOfferRepository.OffersForJob(jobId, page, pageSize);
+            return Ok(JobMapper.MapToDtos(offers,await UnitOfWork.CurrencyRepository.GetAllAsync()));
         }
         [Authorize(Roles = "Contractor")]
         [HttpPost]

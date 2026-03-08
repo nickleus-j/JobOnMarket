@@ -1,7 +1,7 @@
 <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="job-form">
    
   <!-- Error Alert -->
-  <div class="alert alert-danger" *ngIf="errorMessage">
+  <div class="alert alert-danger invalid-feedback" *ngIf="errorMessage">
     <strong>Error:</strong> {{ errorMessage }}
   </div>
 

@@ -16,5 +16,6 @@ export const routes: Routes = [
     {path:'jobs',component:JobFeed},
     {path:'job/:id',component:JobDetail},
     {path:'jobform',component:JobFormComponent},
+    {path:'jobform/:id',component:JobFormComponent},
     {path:'contractors',component:ContractorFeed}
   ];
