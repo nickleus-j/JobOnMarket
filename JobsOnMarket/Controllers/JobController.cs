@@ -79,7 +79,6 @@ namespace JobsOnMarket.Controllers
             {
                 return BadRequest(ModelState); // Returns 400 Bad Request with error details
             }
-            
             try
             {
                 var currencies = await UnitOfWork.CurrencyRepository.FindAsync(c =>

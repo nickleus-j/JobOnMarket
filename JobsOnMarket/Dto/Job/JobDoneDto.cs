@@ -19,26 +19,3 @@ public class JobDoneDto
   public string CustomerName { get; set; }
   public string ContractorName { get; set; }
 }
-/*
- *{
-     "id": 1,
-     "rating": 3,
-     "description": "Painted the fence but facade can be better",
-     "dateReported": "2026-03-06T00:00:00",
-     "jobOfferId": 1,
-     "offerCompleted": {
-       "id": 1,
-       "price": 5510,
-       "priceCurrencyId": 1,
-       "jobId": 2,
-       "offeredJob": null,
-       "offeredByContractorId": 1,
-       "offeredByContractor": {
-         "id": 1,
-         "name": "Acme co",
-         "rating": 3
-       },
-       "priceCurrency": null
-     }
-   }
- */

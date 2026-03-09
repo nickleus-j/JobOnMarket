@@ -1,5 +1,7 @@
 using JobMarket.Data;
+using JobsOnMarket.Dto.Job;
 using JobsOnMarket.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobsOnMarket.Controllers;
@@ -36,5 +38,14 @@ public class JobDoneReportController : Controller
             return NotFound();
         }
         return Ok(JobMapper.MapToJobDoneDto(jobreport));
+    }
+    [Authorize(Roles = "Customer")]
+    [HttpPost]
+    public async Task<IActionResult> Post(JobDoneDto dto)
+    {
+        var jobDone = JobMapper.MapToJobDoneEntity(dto,await UnitOfWork.CurrencyRepository.GetAllAsync());
+        await UnitOfWork.JobDoneReportRepository.AddAsync(jobDone);
+        await UnitOfWork.CompleteAsync();
+        return Ok(JobMapper.MapToJobDoneDto(jobDone));
     }
 }

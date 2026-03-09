@@ -177,4 +177,54 @@ public class JobMapper
 
         return entities.Select(entity => MapToJobDoneDto(entity));
     }
+    public static JobDoneReport MapToJobDoneEntity(JobDoneDto dto, IEnumerable<Currency> currencies)
+    {
+        if (dto == null)
+            throw new ArgumentNullException(nameof(dto));
+
+        // Split CustomerName back into First and Last Name (Assuming "First Last" format)
+        string firstName = string.Empty;
+        string lastName = string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(dto.CustomerName))
+        {
+            var parts = dto.CustomerName.Trim().Split(' ', 2);
+            firstName = parts[0];
+            lastName = parts.Length > 1 ? parts[1] : string.Empty;
+        }
+        var currency = currencies
+            .FirstOrDefault(c => string.Equals(c.Code, dto.CurrencyCode, StringComparison.OrdinalIgnoreCase));
+        return new JobDoneReport
+        {
+            ID = dto.ID,
+            Rating = dto.Rating,
+            Description = dto.Description,
+            DateReported = dto.DateReported,
+        
+            // Mapping back into the navigation hierarchy
+            OfferCompleted = new JobOffer
+            {
+                ID = dto.JobId, // Mapping DTO JobId to the Entity ID of the offer
+                Price = dto.price,
+                PriceCurrency = new Currency { Code = currency.Code, Name = currency.Name },
+                OfferedByContractor = new Contractor { Name = dto.ContractorName },
+                OfferedJob = new Job 
+                { 
+                    AcceptedBy = new Customer 
+                    { 
+                        FirstName = firstName, 
+                        LastName = lastName 
+                    } 
+                }
+            }
+        };
+    }
+
+    public static IEnumerable<JobDoneReport> MapToJobDoneEntities(IEnumerable<JobDoneDto> dtos, IEnumerable<Currency> currencies)
+    {
+        if (dtos == null)
+            throw new ArgumentNullException(nameof(dtos));
+
+        return dtos.Select(dto => MapToJobDoneEntity(dto,currencies)).ToList();
+    }
 }
