@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs/internal/Observable';
 import { JobFeedService } from '../Service/Job.Feed.service';
 import { JobDto } from '../Job/JobDto';
-import { ActivatedRoute } from '@angular/router';
-import { JobFormComponent } from '../Job/Job.Form';
 
 @Component({
   selector: 'job-feed',

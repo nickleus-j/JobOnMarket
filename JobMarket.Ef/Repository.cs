@@ -42,6 +42,11 @@ namespace JobMarket.Ef
             return await Context.Set<TEntity>().ToListAsync();
         }
 
+        /// <summary>
+        /// Get entity from with an ID value
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<TEntity> GetAsync(int id)
         {
             return await Context.Set<TEntity>().FindAsync(id);
