@@ -30,5 +30,17 @@ namespace JobMarket.Ef
             Remove(job);
             await marketContext.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Job>> GetJobs(string searchTerm)
+        {
+            int Id;
+            bool isNumber = int.TryParse(searchTerm, out Id);
+            if (isNumber)
+            {
+                return await FindAsync(c => c.ID == Id);
+            }
+            string loweredTerm = $"%{searchTerm.ToLower()}%";
+            return await FindAsync(j => !String.IsNullOrEmpty(j.Description) && EF.Functions.Like(j.Description.ToLower(), loweredTerm));
+        }
     }
 }

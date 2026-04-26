@@ -9,5 +9,6 @@ namespace JobMarket.Data
     {
         Task AcceptJob(int jobId, int customerId);
         Task RemoveJob(int jobId);
+        Task<IEnumerable<Job>> GetJobs(string searchTerm);
     }
 }
